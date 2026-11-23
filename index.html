@@ -1,0 +1,2112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TinyMinyCreative — Studio &amp; App Hub</title>
+  <style>
+    :root {
+      --bg-base: #07090f;
+      --bg-elevated: #0e1320;
+      --glass: rgba(17, 23, 38, 0.72);
+      --glass-strong: rgba(13, 18, 30, 0.88);
+      --border: rgba(255, 255, 255, 0.09);
+      --border-bright: rgba(255, 255, 255, 0.2);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --accent-primary: #6366f1;
+      --accent-secondary: #06b6d4;
+      --danger: #f43f5e;
+      --success: #10b981;
+      --radius-xl: 22px;
+      --radius-lg: 14px;
+      --radius-md: 10px;
+      --shadow-card: 0 20px 45px -15px rgba(0, 0, 0, 0.65);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Ambient Animated Backdrop */
+    .ambient-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      overflow: hidden;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.16), transparent 42%),
+        radial-gradient(circle at 85% 20%, rgba(6, 182, 212, 0.14), transparent 40%),
+        radial-gradient(circle at 50% 90%, rgba(236, 72, 153, 0.12), transparent 45%),
+        var(--bg-base);
+    }
+
+    .grid-overlay {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(to right, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+      background-size: 44px 44px;
+      mask-image: radial-gradient(ellipse at center, black 40%, transparent 85%);
+      -webkit-mask-image: radial-gradient(ellipse at center, black 40%, transparent 85%);
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.45;
+      animation: floatOrb 18s ease-in-out infinite alternate;
+    }
+
+    .orb-1 {
+      width: 360px;
+      height: 360px;
+      background: #4f46e5;
+      top: -80px;
+      left: -60px;
+    }
+
+    .orb-2 {
+      width: 320px;
+      height: 320px;
+      background: #0891b2;
+      bottom: -60px;
+      right: -40px;
+      animation-delay: -6s;
+    }
+
+    @keyframes floatOrb {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(40px, 30px) scale(1.1); }
+    }
+
+    /* Full-Screen First Screen: Account Creation & 2nd Step OTP */
+    #onboarding-screen {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 20px;
+      animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .onboarding-shell {
+      width: 100%;
+      max-width: 920px;
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-bright);
+      border-radius: 26px;
+      overflow: hidden;
+      box-shadow: 0 30px 70px rgba(0, 0, 0, 0.78);
+    }
+
+    .onboarding-pitch {
+      padding: 36px;
+      background: linear-gradient(160deg, rgba(99, 102, 241, 0.14), rgba(6, 182, 212, 0.06));
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      font-size: 1.15rem;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-logo {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #6366f1, #06b6d4);
+      display: grid;
+      place-items: center;
+      box-shadow: 0 0 22px rgba(99, 102, 241, 0.5);
+      color: #fff;
+      font-size: 1rem;
+    }
+
+    .pitch-copy h1 {
+      font-size: clamp(1.7rem, 3vw, 2.25rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.14;
+      margin-bottom: 12px;
+    }
+
+    .pitch-copy p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    .app-preview-pills {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .preview-pill {
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 0.84rem;
+      font-weight: 600;
+    }
+
+    .pitch-foot {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+    }
+
+    .onboarding-form-pane {
+      padding: 36px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .step-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.28);
+      padding: 4px 10px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+      width: fit-content;
+    }
+
+    .otp-preview-box {
+      background: rgba(99, 102, 241, 0.12);
+      border: 1px dashed rgba(129, 140, 248, 0.45);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .otp-code-chip {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      color: #fff;
+      background: rgba(0, 0, 0, 0.35);
+      padding: 4px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border-bright);
+    }
+
+    .otp-input {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 1.25rem !important;
+      font-weight: 700;
+      letter-spacing: 0.35em;
+      text-align: center;
+    }
+
+    .otp-actions-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 12px;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .link-btn {
+      background: none;
+      border: none;
+      color: #818cf8;
+      font-weight: 600;
+      font-size: 0.82rem;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    .link-btn:disabled {
+      color: var(--text-dim);
+      text-decoration: none;
+      cursor: not-allowed;
+    }
+
+    /* Top Glass Header (Shown after Account Creation + OTP Verification) */
+    header {
+      height: 64px;
+      padding: 0 24px;
+      background: var(--glass-strong);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 30;
+    }
+
+    body.authenticated header {
+      display: flex;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      font-weight: 700;
+      font-size: 1.02rem;
+      letter-spacing: -0.02em;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .brand-badge {
+      font-size: 0.68rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: rgba(99, 102, 241, 0.16);
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      color: #a5b4fc;
+    }
+
+    /* Pill Navigation */
+    .nav-tabs {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(255, 255, 255, 0.035);
+      padding: 4px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .nav-tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .nav-btn {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid transparent;
+      padding: 6px 13px;
+      border-radius: 8px;
+      font-size: 0.84rem;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .nav-btn:hover {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-btn.active {
+      color: #fff;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.85), rgba(79, 70, 229, 0.95));
+      border-color: rgba(255, 255, 255, 0.2);
+      box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+    }
+
+    .nav-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+      opacity: 0.65;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .icon-btn {
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text-main);
+      border: 1px solid var(--border);
+      padding: 7px 12px;
+      border-radius: 9px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.18s ease;
+    }
+
+    .icon-btn:hover {
+      background: rgba(255, 255, 255, 0.09);
+      border-color: var(--border-bright);
+      transform: translateY(-1px);
+    }
+
+    .user-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px 4px 5px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: background 0.18s ease, border-color 0.18s ease;
+    }
+
+    .user-chip:hover {
+      background: rgba(255, 255, 255, 0.09);
+      border-color: var(--border-bright);
+    }
+
+    .user-avatar {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ec4899, #6366f1);
+      display: grid;
+      place-items: center;
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: #fff;
+      text-transform: uppercase;
+    }
+
+    .user-name {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-main);
+      max-width: 110px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .kbd {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.7rem;
+      padding: 1px 5px;
+      border-radius: 4px;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+
+    /* Main Workspace Content */
+    main#workspace-main {
+      flex: 1;
+      display: none;
+      flex-direction: column;
+    }
+
+    body.authenticated main#workspace-main {
+      display: flex;
+    }
+
+    /* Launcher View */
+    #launcher-view {
+      max-width: 1140px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 44px 24px 64px;
+      animation: fadeUp 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 34px;
+    }
+
+    .hero-copy {
+      max-width: 640px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      padding: 5px 12px;
+      border-radius: 999px;
+      margin-bottom: 14px;
+    }
+
+    .hero h1 {
+      font-size: clamp(1.9rem, 3.8vw, 2.75rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.12;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, #ffffff 30%, #cbd5e1 70%, #818cf8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      color: var(--text-muted);
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    /* Search & Filter Bar */
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 260px;
+      flex: 0 1 320px;
+    }
+
+    .search-box {
+      position: relative;
+      width: 100%;
+    }
+
+    .search-box input {
+      width: 100%;
+      background: var(--glass);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 10px 38px 10px 36px;
+      border-radius: 12px;
+      font-size: 0.88rem;
+      outline: none;
+      backdrop-filter: blur(12px);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .search-box input:focus {
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-dim);
+      font-size: 0.9rem;
+      pointer-events: none;
+    }
+
+    .search-shortcut {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    /* App Cards Grid */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      position: relative;
+      background: var(--glass);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 20px;
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+      transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(
+        420px circle at var(--mouse-x, 50%) var(--mouse-y, 0%),
+        var(--card-glow, rgba(99, 102, 241, 0.16)),
+        transparent 60%
+      );
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      border-color: var(--card-border, rgba(99, 102, 241, 0.5));
+      box-shadow: 0 26px 50px -15px rgba(0, 0, 0, 0.8);
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    .card-accent-strip {
+      position: absolute;
+      top: 0;
+      left: 24px;
+      right: 24px;
+      height: 2px;
+      border-radius: 0 0 4px 4px;
+      background: var(--card-gradient);
+      opacity: 0.85;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .icon-wrap {
+      width: 50px;
+      height: 50px;
+      border-radius: 14px;
+      background: var(--card-gradient);
+      display: grid;
+      place-items: center;
+      font-size: 1.45rem;
+      box-shadow: 0 10px 24px -6px var(--card-shadow);
+      flex-shrink: 0;
+    }
+
+    .meta-badges {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
+    }
+
+    .category-pill {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+    }
+
+    .file-tag {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.72rem;
+      color: var(--text-dim);
+    }
+
+    .card-body h2 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: -0.015em;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .shortcut-hint {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: var(--text-dim);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      padding: 2px 6px;
+      border-radius: 5px;
+    }
+
+    .card-body p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      line-height: 1.55;
+      margin-bottom: 14px;
+    }
+
+    .feature-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .feature-tag {
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 8px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .launch-btn {
+      flex: 1;
+      background: var(--card-gradient);
+      color: #fff;
+      border: none;
+      padding: 10px 12px;
+      border-radius: 11px;
+      font-size: 0.86rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      box-shadow: 0 8px 20px -6px var(--card-shadow);
+      transition: filter 0.18s ease, transform 0.18s ease;
+    }
+
+    .launch-btn:hover {
+      filter: brightness(1.1);
+      transform: translateY(-1px);
+    }
+
+    .action-square-btn {
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      padding: 10px 11px;
+      border-radius: 11px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      transition: all 0.18s ease;
+    }
+
+    .action-square-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.1);
+      border-color: var(--border-bright);
+    }
+
+    /* Footer Hints */
+    .hub-footer {
+      margin-top: 32px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--text-dim);
+      font-size: 0.82rem;
+    }
+
+    .key-hints {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .key-hints span {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* Embedded App Stage */
+    #stage-view {
+      display: none;
+      flex: 1;
+      flex-direction: column;
+      height: calc(100vh - 64px);
+    }
+
+    #stage-view.active {
+      display: flex;
+    }
+
+    .stage-bar {
+      background: rgba(13, 18, 30, 0.92);
+      border-bottom: 1px solid var(--border);
+      padding: 8px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 0.84rem;
+    }
+
+    .stage-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-muted);
+    }
+
+    .stage-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 4px 10px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      font-weight: 600;
+    }
+
+    .stage-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .frame-wrapper {
+      position: relative;
+      flex: 1;
+      display: flex;
+      background: #0b0e17;
+    }
+
+    #app-frame {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: #ffffff;
+    }
+
+    /* Fullscreen Stage Mode */
+    body.stage-fullscreen header {
+      display: none;
+    }
+
+    body.stage-fullscreen #stage-view {
+      height: 100vh;
+    }
+
+    /* Shared Auth Form & Modal Styles */
+    .auth-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      background: rgba(0, 0, 0, 0.28);
+      padding: 4px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      margin-bottom: 18px;
+    }
+
+    .auth-tab {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 8px;
+      border-radius: 7px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .auth-tab.active {
+      background: var(--accent-primary);
+      color: #fff;
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .form-group input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    .form-group input:focus {
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    }
+
+    .auth-error {
+      color: #fda4af;
+      background: rgba(244, 63, 94, 0.12);
+      border: 1px solid rgba(244, 63, 94, 0.3);
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      margin-bottom: 14px;
+      display: none;
+    }
+
+    .submit-auth-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #6366f1, #06b6d4);
+      color: #fff;
+      border: none;
+      padding: 11px;
+      border-radius: 11px;
+      font-size: 0.92rem;
+      font-weight: 650;
+      cursor: pointer;
+      margin-top: 4px;
+      box-shadow: 0 10px 24px -8px rgba(99, 102, 241, 0.55);
+    }
+
+    .submit-auth-btn:hover {
+      filter: brightness(1.08);
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(3, 5, 10, 0.78);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 60;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+      animation: fadeIn 0.2s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .profile-card {
+      width: 100%;
+      max-width: 420px;
+      background: #101625;
+      border: 1px solid var(--border-bright);
+      border-radius: var(--radius-xl);
+      padding: 28px;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    .modal-close:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .profile-summary {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+    }
+
+    .profile-avatar-lg {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ec4899, #6366f1);
+      display: grid;
+      place-items: center;
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .secondary-btn {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-main);
+      border: 1px solid var(--border);
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 0.86rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .secondary-btn:hover {
+      background: rgba(255, 255, 255, 0.11);
+    }
+
+    .danger-btn {
+      background: rgba(244, 63, 94, 0.14);
+      color: #fda4af;
+      border: 1px solid rgba(244, 63, 94, 0.35);
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 0.86rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .danger-btn:hover {
+      background: rgba(244, 63, 94, 0.24);
+    }
+
+    .delete-confirm-box {
+      padding: 14px;
+      border-radius: 12px;
+      background: rgba(244, 63, 94, 0.08);
+      border: 1px solid rgba(244, 63, 94, 0.32);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .delete-confirm-box input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    .delete-confirm-box input:focus {
+      border-color: var(--danger);
+      box-shadow: 0 0 0 3px rgba(244, 63, 94, 0.2);
+    }
+
+    .delete-confirm-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 22px;
+      right: 22px;
+      background: #131b2e;
+      color: var(--text-main);
+      border: 1px solid var(--border-bright);
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-size: 0.86rem;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transform: translateY(120%);
+      opacity: 0;
+      transition: all 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+      z-index: 80;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    @media (max-width: 820px) {
+      .onboarding-shell {
+        grid-template-columns: 1fr;
+      }
+      .onboarding-pitch {
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        padding: 26px;
+      }
+      .onboarding-form-pane {
+        padding: 26px;
+      }
+    }
+
+    @media (max-width: 760px) {
+      header {
+        padding: 0 14px;
+      }
+      .brand-badge,
+      .header-actions .label-text,
+      .kbd {
+        display: none;
+      }
+      #launcher-view {
+        padding: 28px 16px 44px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="ambient-canvas" aria-hidden="true">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="grid-overlay"></div>
+  </div>
+
+  <!-- FIRST SCREEN: Step 1 Account Form + Step 2 OTP Verification -->
+  <section id="onboarding-screen" aria-label="TinyMinyCreative Account Creation and OTP Verification">
+    <div class="onboarding-shell">
+      <div class="onboarding-pitch">
+        <div>
+          <div class="brand-row">
+            <div class="brand-logo">✦</div>
+            <span>TinyMinyCreative</span>
+          </div>
+
+          <div class="pitch-copy" style="margin-top: 28px;">
+            <h1>Two-step verification for TinyMinyCreative</h1>
+            <p>Enter your account details first, then verify your 6-digit one-time passcode (OTP) to unlock all 4 studio apps.</p>
+          </div>
+
+          <div class="app-preview-pills">
+            <div class="preview-pill"><span>🧊</span><span>Blender Lite V2</span></div>
+            <div class="preview-pill"><span>📘</span><span>EasyLearn</span></div>
+            <div class="preview-pill"><span>✂️</span><span>EasyliyEdit</span></div>
+            <div class="preview-pill"><span>🎨</span><span>PixelForge</span></div>
+          </div>
+        </div>
+
+        <div class="pitch-foot">TinyMinyCreative Studio Hub • Account + 2nd-Step OTP</div>
+      </div>
+
+      <div class="onboarding-form-pane">
+        <!-- STEP 1: CREDENTIALS -->
+        <div id="step-credentials-pane">
+          <div class="step-badge">Step 1 of 2 • Account</div>
+
+          <div class="auth-tabs">
+            <button id="tab-signup" class="auth-tab active" type="button" onclick="switchAuthMode('signup')">Create Account</button>
+            <button id="tab-login" class="auth-tab" type="button" onclick="switchAuthMode('login')">Sign In</button>
+          </div>
+
+          <h2 id="auth-title" style="font-size: 1.35rem; font-weight: 750; margin-bottom: 6px;">Create Your Account</h2>
+          <p id="auth-subtitle" style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 18px;">We'll send a 6-digit OTP code to your email for second-step verification.</p>
+
+          <div id="auth-error" class="auth-error"></div>
+
+          <form id="auth-form" onsubmit="handleCredentialsSubmit(event)">
+            <div id="name-field-group" class="form-group">
+              <label for="auth-name">Creator Display Name</label>
+              <input id="auth-name" type="text" placeholder="e.g., Alex Rivera" autocomplete="name" />
+            </div>
+
+            <div class="form-group">
+              <label for="auth-email">Email Address (for OTP)</label>
+              <input id="auth-email" type="email" placeholder="you@example.com" required autocomplete="email" />
+            </div>
+
+            <div class="form-group">
+              <label for="auth-password">Password</label>
+              <input id="auth-password" type="password" placeholder="At least 6 characters" required minlength="6" autocomplete="current-password" />
+            </div>
+
+            <button id="auth-submit-btn" class="submit-auth-btn" type="submit">Send OTP &amp; Continue →</button>
+          </form>
+        </div>
+
+        <!-- STEP 2: OTP VERIFICATION -->
+        <div id="step-otp-pane" style="display: none;">
+          <div class="step-badge">Step 2 of 2 • Second-Step OTP</div>
+
+          <h2 style="font-size: 1.35rem; font-weight: 750; margin-bottom: 6px;">Verify Your OTP</h2>
+          <p id="otp-sent-desc" style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 14px;">
+            Enter the 6-digit verification code sent to <strong id="otp-target-email" style="color: var(--text-main);"></strong>.
+          </p>
+
+          <!-- Local sandbox code helper (no backend server) -->
+          <div class="otp-preview-box">
+            <span>Sandbox OTP Code:</span>
+            <span id="sandbox-otp-display" class="otp-code-chip">000000</span>
+          </div>
+
+          <div id="otp-error" class="auth-error"></div>
+
+          <form id="otp-form" onsubmit="handleOtpVerify(event)">
+            <div class="form-group">
+              <label for="otp-input">6-Digit One-Time Password</label>
+              <input
+                id="otp-input"
+                class="otp-input"
+                type="text"
+                inputmode="numeric"
+                pattern="[0-9]{6}"
+                maxlength="6"
+                placeholder="••••••"
+                required
+                autocomplete="one-time-code"
+              />
+            </div>
+
+            <button class="submit-auth-btn" type="submit">Verify OTP &amp; Enter TinyMinyCreative</button>
+          </form>
+
+          <div class="otp-actions-row">
+            <button id="resend-otp-btn" class="link-btn" type="button" onclick="resendOtp()" disabled>
+              Resend OTP (<span id="otp-timer">60</span>s)
+            </button>
+            <button class="link-btn" type="button" onclick="backToStepOne()">← Change Email</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TOP HEADER (Visible after Account + OTP Verification) -->
+  <header>
+    <div class="brand" onclick="showHome()" title="Return to TinyMinyCreative">
+      <div class="brand-logo">✦</div>
+      <span>TinyMinyCreative</span>
+      <span class="brand-badge">4 Apps</span>
+    </div>
+
+    <nav class="nav-tabs" aria-label="TinyMinyCreative Apps">
+      <button class="nav-btn active" data-view="home" onclick="showHome()">
+        <span>Home</span>
+      </button>
+      <button class="nav-btn" data-app="blender" onclick="openApp('blender')">
+        <span class="nav-dot" style="color: #fb923c;"></span>
+        <span>Blender Lite V2</span>
+      </button>
+      <button class="nav-btn" data-app="easylearn" onclick="openApp('easylearn')">
+        <span class="nav-dot" style="color: #38bdf8;"></span>
+        <span>EasyLearn</span>
+      </button>
+      <button class="nav-btn" data-app="easyliyedit" onclick="openApp('easyliyedit')">
+        <span class="nav-dot" style="color: #34d399;"></span>
+        <span>EasyliyEdit</span>
+      </button>
+      <button class="nav-btn" data-app="pixelforge" onclick="openApp('pixelforge')">
+        <span class="nav-dot" style="color: #f472b6;"></span>
+        <span>PixelForge</span>
+      </button>
+    </nav>
+
+    <div class="header-actions">
+      <button id="stage-download-btn" class="icon-btn" onclick="downloadActiveApp()" style="display: none;" title="Download this app's HTML file">
+        <span>⬇</span>
+        <span class="label-text">Download</span>
+      </button>
+      <button id="reload-btn" class="icon-btn" onclick="reloadFrame()" style="display: none;" title="Reload active app">
+        <span>↻</span>
+        <span class="label-text">Reload</span>
+      </button>
+      <a id="external-link" class="icon-btn" href="#" target="_blank" rel="noopener" style="display: none;" title="Open in separate browser tab">
+        <span>↗</span>
+        <span class="label-text">New Tab</span>
+      </a>
+
+      <div id="header-user-chip" class="user-chip" onclick="openProfileModal()" title="Manage TinyMinyCreative Account">
+        <div id="header-avatar" class="user-avatar">U</div>
+        <span id="header-username" class="user-name">User</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN WORKSPACE (Visible after Account + OTP Verification) -->
+  <main id="workspace-main">
+    <section id="launcher-view">
+      <div class="hero">
+        <div class="hero-copy">
+          <div class="eyebrow">✦ TinyMinyCreative Hub</div>
+          <h1>TinyMinyCreative</h1>
+          <p>Launch in your browser or download standalone offline copies of Blender Lite V2, EasyLearn, EasyliyEdit, and PixelForge.</p>
+        </div>
+
+        <div class="toolbar">
+          <div class="search-box">
+            <span class="search-icon">⌕</span>
+            <input id="app-search" type="search" placeholder="Filter apps or tools..." autocomplete="off" />
+            <span class="kbd search-shortcut">/</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid" id="app-grid"></div>
+
+      <footer class="hub-footer">
+        <div>TinyMinyCreative — 2-Step OTP Verified • Browser Launch &amp; Offline HTML Downloads ready.</div>
+        <div class="key-hints">
+          <span><kbd class="kbd">1</kbd>–<kbd class="kbd">4</kbd> Quick Launch</span>
+          <span><kbd class="kbd">/</kbd> Search</span>
+          <span><kbd class="kbd">Esc</kbd> Back Home</span>
+        </div>
+      </footer>
+    </section>
+
+    <section id="stage-view">
+      <div class="stage-bar">
+        <div class="stage-meta">
+          <span class="stage-pill">
+            <span id="stage-icon">✦</span>
+            <span id="stage-title">App Name</span>
+          </span>
+          <span id="stage-file" class="file-tag"></span>
+        </div>
+        <div class="stage-controls">
+          <button class="icon-btn" onclick="downloadActiveApp()" title="Download standalone HTML file">
+            <span>⬇</span>
+            <span class="label-text">Download App</span>
+          </button>
+          <button class="icon-btn" onclick="toggleFullscreen()" title="Toggle theater mode">
+            <span id="fs-icon">⛶</span>
+            <span class="label-text" id="fs-label">Expand</span>
+          </button>
+          <button class="icon-btn" onclick="showHome()">← Back to TinyMinyCreative</button>
+        </div>
+      </div>
+      <div class="frame-wrapper">
+        <iframe id="app-frame" title="Embedded TinyMinyCreative App"></iframe>
+      </div>
+    </section>
+  </main>
+
+  <!-- Profile Modal (Clicking User Chip) -->
+  <div id="profile-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="profile-modal-title">
+    <div class="profile-card">
+      <button class="modal-close" onclick="closeProfileModal()" aria-label="Close">✕</button>
+      <div>
+        <h2 id="profile-modal-title" style="font-size: 1.25rem; font-weight: 750; margin-bottom: 4px;">TinyMinyCreative Account</h2>
+        <p style="color: var(--text-muted); font-size: 0.85rem;">2-step OTP verified • Ready to launch or download all 4 apps.</p>
+      </div>
+
+      <div class="profile-summary">
+        <div id="profile-avatar-lg" class="profile-avatar-lg">U</div>
+        <div>
+          <div id="profile-name" style="font-weight: 700; font-size: 1rem;">Creator</div>
+          <div id="profile-email" style="color: var(--text-muted); font-size: 0.84rem;">you@example.com</div>
+          <div id="profile-joined" style="color: var(--text-dim); font-size: 0.75rem; margin-top: 2px;">Member</div>
+        </div>
+      </div>
+
+      <button class="secondary-btn" type="button" onclick="logoutUser()">Sign Out (Requires OTP Next Time)</button>
+
+      <div id="delete-step-initial">
+        <button class="danger-btn" style="width: 100%;" type="button" onclick="startDeleteOtpFlow()">Send OTP to Delete Account</button>
+      </div>
+
+      <div id="delete-step-confirm" class="delete-confirm-box" style="display: none;">
+        <p style="font-size: 0.84rem; color: #fecdd3; font-weight: 600;">Verify 6-Digit OTP to Delete Account</p>
+        <p style="font-size: 0.79rem; color: var(--text-muted); line-height: 1.45;">
+          Enter the 6-digit OTP sent to <strong id="delete-otp-email" style="color: #fff;"></strong> to permanently delete this account.
+        </p>
+
+        <div class="otp-preview-box" style="margin-bottom: 2px;">
+          <span>Sandbox Delete OTP:</span>
+          <span id="delete-sandbox-otp" class="otp-code-chip">000000</span>
+        </div>
+
+        <input
+          id="delete-otp-input"
+          class="otp-input"
+          type="text"
+          inputmode="numeric"
+          pattern="[0-9]{6}"
+          maxlength="6"
+          placeholder="••••••"
+          autocomplete="one-time-code"
+        />
+
+        <div id="delete-error" class="auth-error" style="margin-bottom: 0;"></div>
+
+        <div class="otp-actions-row" style="margin-top: 2px;">
+          <button id="delete-resend-btn" class="link-btn" type="button" onclick="resendDeleteOtp()" disabled>
+            Resend OTP (<span id="delete-otp-timer">60</span>s)
+          </button>
+        </div>
+
+        <div class="delete-confirm-actions">
+          <button class="secondary-btn" type="button" onclick="cancelDeleteConfirmation()">Cancel</button>
+          <button class="danger-btn" type="button" onclick="deleteAccountWithOtp()">Verify &amp; Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast" role="status" aria-live="polite">
+    <span>✦</span>
+    <span id="toast-msg">Notification</span>
+  </div>
+
+  <script>
+    // Optional real email OTP webhook (e.g., EmailJS REST endpoint or your own API)
+    const OTP_WEBHOOK_CONFIG = {
+      enabled: false,
+      endpoint: "", // e.g., "https://api.emailjs.com/api/v1.0/email/send"
+      buildPayload: (toEmail, userName, otpCode, purpose = "verification") => ({
+        to_email: toEmail,
+        to_name: userName,
+        otp_code: otpCode,
+        purpose
+      })
+    };
+
+    const APPS = [
+      {
+        id: "blender",
+        key: "1",
+        name: "Blender Lite V2",
+        file: "Blender Lite V2.html",
+        category: "3D Studio",
+        icon: "🧊",
+        description: "Lightweight browser-based 3D viewport for sculpting, primitives, lighting, and quick scene previews.",
+        tags: ["3D Mesh", "Viewport", "Lighting"],
+        gradient: "linear-gradient(135deg, #f97316, #ea580c)",
+        glow: "rgba(249, 115, 22, 0.22)",
+        border: "rgba(249, 115, 22, 0.55)",
+        shadow: "rgba(234, 88, 12, 0.45)"
+      },
+      {
+        id: "easylearn",
+        key: "2",
+        name: "EasyLearn",
+        file: "Easylean.html",
+        category: "Study Hub",
+        icon: "📘",
+        description: "Focused interactive learning companion built for structured notes, practice drills, and rapid recall.",
+        tags: ["Interactive", "Notes", "Practice"],
+        gradient: "linear-gradient(135deg, #0ea5e9, #2563eb)",
+        glow: "rgba(14, 165, 233, 0.22)",
+        border: "rgba(14, 165, 233, 0.55)",
+        shadow: "rgba(37, 99, 235, 0.45)"
+      },
+      {
+        id: "easyliyedit",
+        key: "3",
+        name: "EasyliyEdit",
+        file: "EasyliyEdit.html",
+        category: "Editor",
+        icon: "✂️",
+        description: "Fast, distraction-free editing workspace engineered for clean revisions and instant formatting.",
+        tags: ["Quick Edit", "Clean UI", "Export"],
+        gradient: "linear-gradient(135deg, #10b981, #059669)",
+        glow: "rgba(16, 185, 129, 0.22)",
+        border: "rgba(16, 185, 129, 0.55)",
+        shadow: "rgba(5, 150, 105, 0.45)"
+      },
+      {
+        id: "pixelforge",
+        key: "4",
+        name: "PixelForge",
+        file: "PixelForge.html",
+        category: "Pixel Art",
+        icon: "🎨",
+        description: "Precision pixel canvas and sprite workshop with palettes, layers, and crisp asset exports.",
+        tags: ["Sprites", "Palettes", "Canvas"],
+        gradient: "linear-gradient(135deg, #ec4899, #8b5cf6)",
+        glow: "rgba(236, 72, 153, 0.22)",
+        border: "rgba(236, 72, 153, 0.55)",
+        shadow: "rgba(139, 92, 246, 0.45)"
+      }
+    ];
+
+    const STORAGE_USERS_KEY = "tmc_users_v1";
+    const STORAGE_SESSION_KEY = "tmc_session_v1";
+
+    const appMap = Object.fromEntries(APPS.map(app => [app.id, app]));
+    let activeAppId = null;
+    let authMode = "signup";
+    let pendingAuthPayload = null; // { mode, name, email, password, joined }
+    let activeOtpCode = null;
+    let otpExpiresAt = 0;
+    let resendInterval = null;
+
+    let deleteOtpCode = null;
+    let deleteOtpExpiresAt = 0;
+    let deleteResendInterval = null;
+
+    /* ---------- Account & Screen State ---------- */
+    function getUsers() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_USERS_KEY) || "[]");
+      } catch {
+        return [];
+      }
+    }
+
+    function saveUsers(users) {
+      localStorage.setItem(STORAGE_USERS_KEY, JSON.stringify(users));
+    }
+
+    function getCurrentUser() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_SESSION_KEY) || "null");
+      } catch {
+        return null;
+      }
+    }
+
+    function applyScreenState() {
+      const user = getCurrentUser();
+      const onboarding = document.getElementById("onboarding-screen");
+
+      if (user && user.otpVerified) {
+        document.body.classList.add("authenticated");
+        onboarding.style.display = "none";
+        document.getElementById("header-avatar").textContent = (user.name || user.email)[0].toUpperCase();
+        document.getElementById("header-username").textContent = user.name || user.email.split("@")[0];
+      } else {
+        document.body.classList.remove("authenticated");
+        document.body.classList.remove("stage-fullscreen");
+        onboarding.style.display = "flex";
+        backToStepOne();
+        switchAuthMode("signup");
+      }
+    }
+
+    function switchAuthMode(mode) {
+      authMode = mode;
+      const isSignup = mode === "signup";
+      document.getElementById("tab-signup").classList.toggle("active", isSignup);
+      document.getElementById("tab-login").classList.toggle("active", !isSignup);
+      document.getElementById("name-field-group").style.display = isSignup ? "block" : "none";
+      document.getElementById("auth-name").required = isSignup;
+      document.getElementById("auth-title").textContent = isSignup ? "Create Your Account" : "Sign In to TinyMinyCreative";
+      document.getElementById("auth-subtitle").textContent = isSignup
+        ? "We'll send a 6-digit OTP code to your email for second-step verification."
+        : "Sign in and verify your 6-digit OTP code to access your apps.";
+      document.getElementById("auth-submit-btn").textContent = "Send OTP & Continue →";
+      document.getElementById("auth-error").style.display = "none";
+    }
+
+    function showAuthError(msg) {
+      const errBox = document.getElementById("auth-error");
+      errBox.textContent = msg;
+      errBox.style.display = "block";
+    }
+
+    function showOtpError(msg) {
+      const errBox = document.getElementById("otp-error");
+      errBox.textContent = msg;
+      errBox.style.display = "block";
+    }
+
+    function generateSixDigitOtp() {
+      const num = Math.floor(100000 + Math.random() * 900000);
+      return String(num);
+    }
+
+    async function dispatchOtp(email, name, otpCode, purpose = "verification") {
+      if (OTP_WEBHOOK_CONFIG.enabled && OTP_WEBHOOK_CONFIG.endpoint) {
+        try {
+          await fetch(OTP_WEBHOOK_CONFIG.endpoint, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(OTP_WEBHOOK_CONFIG.buildPayload(email, name, otpCode, purpose))
+          });
+        } catch {
+          // Fallback to local sandbox OTP display if webhook is unreachable
+        }
+      }
+    }
+
+    function startResendCooldown(seconds = 60) {
+      clearInterval(resendInterval);
+      let remaining = seconds;
+      const btn = document.getElementById("resend-otp-btn");
+      const timerSpan = document.getElementById("otp-timer");
+      btn.disabled = true;
+      btn.innerHTML = `Resend OTP (<span id="otp-timer">${remaining}</span>s)`;
+
+      resendInterval = setInterval(() => {
+        remaining -= 1;
+        if (remaining <= 0) {
+          clearInterval(resendInterval);
+          btn.disabled = false;
+          btn.innerHTML = "Resend OTP";
+        } else {
+          const currentTimer = document.getElementById("otp-timer");
+          if (currentTimer) currentTimer.textContent = remaining;
+        }
+      }, 1000);
+    }
+
+    async function sendOtpForPendingUser() {
+      if (!pendingAuthPayload) return;
+      activeOtpCode = generateSixDigitOtp();
+      otpExpiresAt = Date.now() + 5 * 60 * 1000; // 5-minute validity
+
+      document.getElementById("otp-target-email").textContent = pendingAuthPayload.email;
+      document.getElementById("sandbox-otp-display").textContent = activeOtpCode;
+      document.getElementById("otp-input").value = "";
+      document.getElementById("otp-error").style.display = "none";
+
+      await dispatchOtp(pendingAuthPayload.email, pendingAuthPayload.name, activeOtpCode, "signin");
+      startResendCooldown(60);
+      showToast(`6-digit OTP sent to ${pendingAuthPayload.email}`);
+    }
+
+    async function handleCredentialsSubmit(e) {
+      e.preventDefault();
+      const name = document.getElementById("auth-name").value.trim();
+      const email = document.getElementById("auth-email").value.trim().toLowerCase();
+      const password = document.getElementById("auth-password").value;
+      const users = getUsers();
+
+      if (authMode === "signup") {
+        if (!name) return showAuthError("Please enter your creator display name.");
+        if (users.some(u => u.email === email)) {
+          return showAuthError("An account with this email already exists. Switch to Sign In.");
+        }
+        pendingAuthPayload = {
+          mode: "signup",
+          name,
+          email,
+          password,
+          joined: new Date().toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })
+        };
+      } else {
+        const matched = users.find(u => u.email === email && u.password === password);
+        if (!matched) {
+          return showAuthError("Invalid email or password. Need an account? Switch to Create Account.");
+        }
+        pendingAuthPayload = {
+          mode: "login",
+          name: matched.name,
+          email: matched.email,
+          password: matched.password,
+          joined: matched.joined
+        };
+      }
+
+      document.getElementById("auth-error").style.display = "none";
+      document.getElementById("step-credentials-pane").style.display = "none";
+      document.getElementById("step-otp-pane").style.display = "block";
+      await sendOtpForPendingUser();
+      document.getElementById("otp-input").focus();
+    }
+
+    async function resendOtp() {
+      await sendOtpForPendingUser();
+    }
+
+    function backToStepOne() {
+      clearInterval(resendInterval);
+      activeOtpCode = null;
+      document.getElementById("step-otp-pane").style.display = "none";
+      document.getElementById("step-credentials-pane").style.display = "block";
+      document.getElementById("otp-error").style.display = "none";
+    }
+
+    function handleOtpVerify(e) {
+      e.preventDefault();
+      if (!pendingAuthPayload || !activeOtpCode) return;
+
+      if (Date.now() > otpExpiresAt) {
+        return showOtpError("This OTP has expired. Click Resend OTP to get a new code.");
+      }
+
+      const entered = document.getElementById("otp-input").value.trim();
+      if (entered !== activeOtpCode) {
+        return showOtpError("Invalid 6-digit OTP code. Please check and try again.");
+      }
+
+      const users = getUsers();
+      if (pendingAuthPayload.mode === "signup") {
+        users.push({
+          name: pendingAuthPayload.name,
+          email: pendingAuthPayload.email,
+          password: pendingAuthPayload.password,
+          joined: pendingAuthPayload.joined
+        });
+        saveUsers(users);
+      }
+
+      localStorage.setItem(STORAGE_SESSION_KEY, JSON.stringify({
+        name: pendingAuthPayload.name,
+        email: pendingAuthPayload.email,
+        joined: pendingAuthPayload.joined,
+        otpVerified: true
+      }));
+
+      clearInterval(resendInterval);
+      const verifiedName = pendingAuthPayload.name;
+      pendingAuthPayload = null;
+      activeOtpCode = null;
+      document.getElementById("auth-form").reset();
+      document.getElementById("otp-form").reset();
+
+      applyScreenState();
+      showHome();
+      showToast(`OTP verified! Welcome to TinyMinyCreative, ${verifiedName}.`);
+    }
+
+    function openProfileModal() {
+      const user = getCurrentUser();
+      if (!user) return;
+      cancelDeleteConfirmation();
+      document.getElementById("profile-avatar-lg").textContent = (user.name || user.email)[0].toUpperCase();
+      document.getElementById("profile-name").textContent = user.name;
+      document.getElementById("profile-email").textContent = user.email;
+      document.getElementById("profile-joined").textContent = `Joined ${user.joined || "TinyMinyCreative"} • OTP Verified`;
+      document.getElementById("profile-modal").classList.add("open");
+    }
+
+    function closeProfileModal() {
+      cancelDeleteConfirmation();
+      document.getElementById("profile-modal").classList.remove("open");
+    }
+
+    function startDeleteResendCooldown(seconds = 60) {
+      clearInterval(deleteResendInterval);
+      let remaining = seconds;
+      const btn = document.getElementById("delete-resend-btn");
+      btn.disabled = true;
+      btn.innerHTML = `Resend OTP (<span id="delete-otp-timer">${remaining}</span>s)`;
+
+      deleteResendInterval = setInterval(() => {
+        remaining -= 1;
+        if (remaining <= 0) {
+          clearInterval(deleteResendInterval);
+          btn.disabled = false;
+          btn.innerHTML = "Resend OTP";
+        } else {
+          const timerEl = document.getElementById("delete-otp-timer");
+          if (timerEl) timerEl.textContent = remaining;
+        }
+      }, 1000);
+    }
+
+    async function sendDeleteOtp() {
+      const user = getCurrentUser();
+      if (!user) return;
+      deleteOtpCode = generateSixDigitOtp();
+      deleteOtpExpiresAt = Date.now() + 5 * 60 * 1000;
+
+      document.getElementById("delete-otp-email").textContent = user.email;
+      document.getElementById("delete-sandbox-otp").textContent = deleteOtpCode;
+      document.getElementById("delete-otp-input").value = "";
+      document.getElementById("delete-error").style.display = "none";
+
+      await dispatchOtp(user.email, user.name, deleteOtpCode, "account_deletion");
+      startDeleteResendCooldown(60);
+      showToast(`Deletion OTP sent to ${user.email}`);
+    }
+
+    async function startDeleteOtpFlow() {
+      document.getElementById("delete-step-initial").style.display = "none";
+      document.getElementById("delete-step-confirm").style.display = "flex";
+      await sendDeleteOtp();
+      document.getElementById("delete-otp-input").focus();
+    }
+
+    async function resendDeleteOtp() {
+      await sendDeleteOtp();
+    }
+
+    function cancelDeleteConfirmation() {
+      clearInterval(deleteResendInterval);
+      deleteOtpCode = null;
+      document.getElementById("delete-step-confirm").style.display = "none";
+      document.getElementById("delete-step-initial").style.display = "block";
+      document.getElementById("delete-error").style.display = "none";
+      document.getElementById("delete-otp-input").value = "";
+    }
+
+    function deleteAccountWithOtp() {
+      const errBox = document.getElementById("delete-error");
+      if (!deleteOtpCode) {
+        errBox.textContent = "Please request a 6-digit OTP first.";
+        errBox.style.display = "block";
+        return;
+      }
+
+      if (Date.now() > deleteOtpExpiresAt) {
+        errBox.textContent = "Deletion OTP expired. Click Resend OTP for a new code.";
+        errBox.style.display = "block";
+        return;
+      }
+
+      const enteredOtp = document.getElementById("delete-otp-input").value.trim();
+      if (enteredOtp !== deleteOtpCode) {
+        errBox.textContent = "Incorrect 6-digit OTP. Account was not deleted.";
+        errBox.style.display = "block";
+        return;
+      }
+
+      const currentUser = getCurrentUser();
+      if (!currentUser) return;
+
+      const targetEmail = (currentUser.email || "").toLowerCase();
+      const remainingUsers = getUsers().filter(u => (u.email || "").toLowerCase() !== targetEmail);
+      saveUsers(remainingUsers);
+      localStorage.removeItem(STORAGE_SESSION_KEY);
+      activeAppId = null;
+
+      closeProfileModal();
+      applyScreenState();
+      showToast(`OTP verified — account (${currentUser.email}) deleted.`);
+    }
+
+    function logoutUser() {
+      localStorage.removeItem(STORAGE_SESSION_KEY);
+      activeAppId = null;
+      closeProfileModal();
+      applyScreenState();
+      showToast("Signed out. Complete account + OTP verification to re-enter.");
+    }
+
+    /* ---------- Downloads & App Cards ---------- */
+    async function triggerAppDownload(id) {
+      const app = appMap[id];
+      if (!app) return;
+
+      const encodedPath = encodeURI(app.file);
+      showToast(`Preparing download for ${app.name}...`);
+
+      try {
+        const response = await fetch(encodedPath);
+        if (!response.ok) throw new Error("Fetch fallback");
+        const blob = await response.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = blobUrl;
+        link.download = app.file;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 2000);
+        showToast(`Downloaded ${app.file}`);
+      } catch {
+        const link = document.createElement("a");
+        link.href = encodedPath;
+        link.download = app.file;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        showToast(`Download triggered for ${app.file}`);
+      }
+    }
+
+    function downloadActiveApp() {
+      if (activeAppId) triggerAppDownload(activeAppId);
+    }
+
+    function escapeHtml(str) {
+      return String(str).replace(/[&<>"']/g, s => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+      }[s]));
+    }
+
+    function renderCards(filterText = "") {
+      const query = filterText.trim().toLowerCase();
+      const filtered = APPS.filter(app =>
+        !query ||
+        app.name.toLowerCase().includes(query) ||
+        app.category.toLowerCase().includes(query) ||
+        app.description.toLowerCase().includes(query) ||
+        app.tags.some(t => t.toLowerCase().includes(query))
+      );
+
+      const grid = document.getElementById("app-grid");
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 48px 20px; color: var(--text-muted); background: var(--glass); border: 1px solid var(--border); border-radius: var(--radius-xl);">
+            No matching apps found in TinyMinyCreative for "<strong>${escapeHtml(filterText)}</strong>".
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(app => `
+        <article
+          class="card"
+          style="--card-gradient: ${app.gradient}; --card-glow: ${app.glow}; --card-border: ${app.border}; --card-shadow: ${app.shadow};"
+          onmousemove="handleCardSpotlight(event, this)"
+        >
+          <div class="card-accent-strip"></div>
+          <div>
+            <div class="card-header">
+              <div class="icon-wrap" aria-hidden="true">${app.icon}</div>
+              <div class="meta-badges">
+                <span class="category-pill">${app.category}</span>
+                <span class="file-tag">${app.file}</span>
+              </div>
+            </div>
+
+            <div class="card-body" style="margin-top: 18px;">
+              <h2>
+                <span>${app.name}</span>
+                <span class="shortcut-hint" title="Press ${app.key} to launch">Key ${app.key}</span>
+              </h2>
+              <p>${app.description}</p>
+              <div class="feature-tags">
+                ${app.tags.map(tag => `<span class="feature-tag">${tag}</span>`).join("")}
+              </div>
+            </div>
+          </div>
+
+          <div class="card-actions">
+            <button class="launch-btn" onclick="openApp('${app.id}')">
+              <span>Launch App</span>
+              <span>→</span>
+            </button>
+            <button class="action-square-btn" onclick="triggerAppDownload('${app.id}')" title="Download ${app.file}">
+              <span>⬇</span>
+            </button>
+            <a class="action-square-btn" href="${encodeURI(app.file)}" target="_blank" rel="noopener" title="Open ${app.name} in a new browser tab">↗</a>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    function handleCardSpotlight(e, card) {
+      const rect = card.getBoundingClientRect();
+      card.style.setProperty("--mouse-x", `${e.clientX - rect.left}px`);
+      card.style.setProperty("--mouse-y", `${e.clientY - rect.top}px`);
+    }
+
+    function setActiveTab(target) {
+      document.querySelectorAll(".nav-btn").forEach(btn => {
+        const isHome = target === "home" && btn.dataset.view === "home";
+        const isApp = btn.dataset.app === target;
+        btn.classList.toggle("active", isHome || isApp);
+      });
+    }
+
+    function showHome() {
+      const user = getCurrentUser();
+      if (!user || !user.otpVerified) return applyScreenState();
+      activeAppId = null;
+      document.body.classList.remove("stage-fullscreen");
+      updateFullscreenButton();
+      setActiveTab("home");
+
+      document.getElementById("launcher-view").style.display = "block";
+      document.getElementById("stage-view").classList.remove("active");
+      document.getElementById("external-link").style.display = "none";
+      document.getElementById("reload-btn").style.display = "none";
+      document.getElementById("stage-download-btn").style.display = "none";
+
+      history.replaceState(null, "", "#home");
+    }
+
+    function openApp(id) {
+      const user = getCurrentUser();
+      if (!user || !user.otpVerified) return applyScreenState();
+      const app = appMap[id];
+      if (!app) return;
+
+      activeAppId = id;
+      setActiveTab(id);
+
+      document.getElementById("launcher-view").style.display = "none";
+      document.getElementById("stage-view").classList.add("active");
+      document.getElementById("stage-icon").textContent = app.icon;
+      document.getElementById("stage-title").textContent = app.name;
+      document.getElementById("stage-file").textContent = app.file;
+
+      const frame = document.getElementById("app-frame");
+      const encodedSrc = encodeURI(app.file);
+      if (frame.getAttribute("src") !== encodedSrc) {
+        frame.setAttribute("src", encodedSrc);
+      }
+
+      document.getElementById("external-link").style.display = "inline-flex";
+      document.getElementById("reload-btn").style.display = "inline-flex";
+      document.getElementById("stage-download-btn").style.display = "inline-flex";
+
+      history.replaceState(null, "", `#${id}`);
+    }
+
+    function reloadFrame() {
+      if (!activeAppId) return;
+      const frame = document.getElementById("app-frame");
+      frame.contentWindow?.location.reload();
+    }
+
+    function toggleFullscreen() {
+      document.body.classList.toggle("stage-fullscreen");
+      updateFullscreenButton();
+    }
+
+    function updateFullscreenButton() {
+      const isFs = document.body.classList.contains("stage-fullscreen");
+      document.getElementById("fs-icon").textContent = isFs ? "🗗" : "⛶";
+      document.getElementById("fs-label").textContent = isFs ? "Exit Expand" : "Expand";
+    }
+
+    let toastTimer = null;
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      document.getElementById("toast-msg").textContent = message;
+      toast.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove("show"), 3200);
+    }
+
+    // Live Search & Keyboard Shortcuts
+    const searchInput = document.getElementById("app-search");
+    searchInput.addEventListener("input", (e) => renderCards(e.target.value));
+
+    document.getElementById("profile-modal").addEventListener("click", (e) => {
+      if (e.target.id === "profile-modal") closeProfileModal();
+    });
+
+    document.addEventListener("keydown", (e) => {
+      const user = getCurrentUser();
+      if (!user || !user.otpVerified) return;
+      const tag = document.activeElement?.tagName;
+      const isTyping = tag === "INPUT" || tag === "TEXTAREA";
+      const modalOpen = document.getElementById("profile-modal").classList.contains("open");
+
+      if (e.key === "Escape") {
+        if (modalOpen) {
+          closeProfileModal();
+        } else if (document.body.classList.contains("stage-fullscreen")) {
+          toggleFullscreen();
+        } else if (activeAppId) {
+          showHome();
+        } else if (isTyping) {
+          searchInput.blur();
+        }
+        return;
+      }
+
+      if (isTyping || modalOpen) return;
+
+      if (e.key === "/" && !activeAppId) {
+        e.preventDefault();
+        searchInput.focus();
+        return;
+      }
+
+      const matchedApp = APPS.find(a => a.key === e.key);
+      if (matchedApp) {
+        openApp(matchedApp.id);
+      }
+    });
+
+    // Boot
+    (function init() {
+      renderCards();
+      applyScreenState();
+
+      const user = getCurrentUser();
+      if (user && user.otpVerified) {
+        const hash = window.location.hash.replace(/^#/, "");
+        if (hash && appMap[hash]) {
+          openApp(hash);
+        } else {
+          showHome();
+        }
+      }
+    })();
+  </script>
+</body>
+</html>
