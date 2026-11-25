@@ -3,2110 +3,1917 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TinyMinyCreative — Studio &amp; App Hub</title>
+  <title>TinyMinyCreative — Studio & App Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    };
+  </script>
   <style>
-    :root {
-      --bg-base: #07090f;
-      --bg-elevated: #0e1320;
-      --glass: rgba(17, 23, 38, 0.72);
-      --glass-strong: rgba(13, 18, 30, 0.88);
-      --border: rgba(255, 255, 255, 0.09);
-      --border-bright: rgba(255, 255, 255, 0.2);
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --text-dim: #64748b;
-      --accent-primary: #6366f1;
-      --accent-secondary: #06b6d4;
-      --danger: #f43f5e;
-      --success: #10b981;
-      --radius-xl: 22px;
-      --radius-lg: 14px;
-      --radius-md: 10px;
-      --shadow-card: 0 20px 45px -15px rgba(0, 0, 0, 0.65);
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    html, body {
-      height: 100%;
-    }
-
+    * { box-sizing: border-box; }
     body {
-      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: var(--bg-base);
-      color: var(--text-main);
+      font-family: 'Inter', system-ui, sans-serif;
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      overflow-x: hidden;
-      position: relative;
     }
-
-    /* Ambient Animated Backdrop */
-    .ambient-canvas {
-      position: fixed;
-      inset: 0;
-      z-index: -1;
-      overflow: hidden;
-      pointer-events: none;
-      background:
-        radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.16), transparent 42%),
-        radial-gradient(circle at 85% 20%, rgba(6, 182, 212, 0.14), transparent 40%),
-        radial-gradient(circle at 50% 90%, rgba(236, 72, 153, 0.12), transparent 45%),
-        var(--bg-base);
+    .glass-card {
+      backdrop-filter: blur(14px);
     }
-
-    .grid-overlay {
-      position: absolute;
-      inset: 0;
-      background-image:
-        linear-gradient(to right, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
-      background-size: 44px 44px;
-      mask-image: radial-gradient(ellipse at center, black 40%, transparent 85%);
-      -webkit-mask-image: radial-gradient(ellipse at center, black 40%, transparent 85%);
-    }
-
-    .orb {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(80px);
-      opacity: 0.45;
-      animation: floatOrb 18s ease-in-out infinite alternate;
-    }
-
-    .orb-1 {
-      width: 360px;
-      height: 360px;
-      background: #4f46e5;
-      top: -80px;
-      left: -60px;
-    }
-
-    .orb-2 {
-      width: 320px;
-      height: 320px;
-      background: #0891b2;
-      bottom: -60px;
-      right: -40px;
-      animation-delay: -6s;
-    }
-
-    @keyframes floatOrb {
-      0% { transform: translate(0, 0) scale(1); }
-      100% { transform: translate(40px, 30px) scale(1.1); }
-    }
-
-    /* Full-Screen First Screen: Account Creation & 2nd Step OTP */
-    #onboarding-screen {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 32px 20px;
-      animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .onboarding-shell {
-      width: 100%;
-      max-width: 920px;
-      display: grid;
-      grid-template-columns: 1.05fr 0.95fr;
-      background: var(--glass);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid var(--border-bright);
-      border-radius: 26px;
-      overflow: hidden;
-      box-shadow: 0 30px 70px rgba(0, 0, 0, 0.78);
-    }
-
-    .onboarding-pitch {
-      padding: 36px;
-      background: linear-gradient(160deg, rgba(99, 102, 241, 0.14), rgba(6, 182, 212, 0.06));
-      border-right: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 24px;
-    }
-
-    .brand-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-weight: 800;
-      font-size: 1.15rem;
-      letter-spacing: -0.02em;
-    }
-
-    .brand-logo {
-      width: 34px;
-      height: 34px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, #6366f1, #06b6d4);
-      display: grid;
-      place-items: center;
-      box-shadow: 0 0 22px rgba(99, 102, 241, 0.5);
-      color: #fff;
-      font-size: 1rem;
-    }
-
-    .pitch-copy h1 {
-      font-size: clamp(1.7rem, 3vw, 2.25rem);
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      line-height: 1.14;
-      margin-bottom: 12px;
-    }
-
-    .pitch-copy p {
-      color: var(--text-muted);
-      font-size: 0.95rem;
-      line-height: 1.6;
-    }
-
-    .app-preview-pills {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 20px;
-    }
-
-    .preview-pill {
-      padding: 10px 12px;
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      font-size: 0.84rem;
-      font-weight: 600;
-    }
-
-    .pitch-foot {
-      font-size: 0.78rem;
-      color: var(--text-dim);
-    }
-
-    .onboarding-form-pane {
-      padding: 36px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    .step-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.74rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: #38bdf8;
-      background: rgba(56, 189, 248, 0.12);
-      border: 1px solid rgba(56, 189, 248, 0.28);
-      padding: 4px 10px;
-      border-radius: 999px;
-      margin-bottom: 12px;
-      width: fit-content;
-    }
-
-    .otp-preview-box {
-      background: rgba(99, 102, 241, 0.12);
-      border: 1px dashed rgba(129, 140, 248, 0.45);
-      border-radius: 12px;
-      padding: 12px 14px;
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      font-size: 0.82rem;
-      color: var(--text-muted);
-    }
-
-    .otp-code-chip {
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: 1rem;
-      font-weight: 800;
-      letter-spacing: 0.18em;
-      color: #fff;
-      background: rgba(0, 0, 0, 0.35);
-      padding: 4px 10px;
-      border-radius: 8px;
-      border: 1px solid var(--border-bright);
-    }
-
-    .otp-input {
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: 1.25rem !important;
-      font-weight: 700;
-      letter-spacing: 0.35em;
-      text-align: center;
-    }
-
-    .otp-actions-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      margin-top: 12px;
-      font-size: 0.82rem;
-      color: var(--text-muted);
-    }
-
-    .link-btn {
-      background: none;
-      border: none;
-      color: #818cf8;
-      font-weight: 600;
-      font-size: 0.82rem;
-      cursor: pointer;
-      text-decoration: underline;
-    }
-
-    .link-btn:disabled {
-      color: var(--text-dim);
-      text-decoration: none;
-      cursor: not-allowed;
-    }
-
-    /* Top Glass Header (Shown after Account Creation + OTP Verification) */
-    header {
-      height: 64px;
-      padding: 0 24px;
-      background: var(--glass-strong);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      border-bottom: 1px solid var(--border);
-      display: none;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      position: sticky;
-      top: 0;
-      z-index: 30;
-    }
-
-    body.authenticated header {
-      display: flex;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 11px;
-      font-weight: 700;
-      font-size: 1.02rem;
-      letter-spacing: -0.02em;
-      cursor: pointer;
-      user-select: none;
-    }
-
-    .brand-badge {
-      font-size: 0.68rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      padding: 2px 7px;
-      border-radius: 999px;
-      background: rgba(99, 102, 241, 0.16);
-      border: 1px solid rgba(99, 102, 241, 0.35);
-      color: #a5b4fc;
-    }
-
-    /* Pill Navigation */
-    .nav-tabs {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      background: rgba(255, 255, 255, 0.035);
-      padding: 4px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      overflow-x: auto;
-      scrollbar-width: none;
-    }
-
-    .nav-tabs::-webkit-scrollbar {
-      display: none;
-    }
-
-    .nav-btn {
-      background: transparent;
-      color: var(--text-muted);
-      border: 1px solid transparent;
-      padding: 6px 13px;
-      border-radius: 8px;
-      font-size: 0.84rem;
-      font-weight: 500;
-      cursor: pointer;
-      white-space: nowrap;
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
-    }
-
-    .nav-btn:hover {
-      color: var(--text-main);
-      background: rgba(255, 255, 255, 0.05);
-    }
-
-    .nav-btn.active {
-      color: #fff;
-      background: linear-gradient(135deg, rgba(99, 102, 241, 0.85), rgba(79, 70, 229, 0.95));
-      border-color: rgba(255, 255, 255, 0.2);
-      box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
-    }
-
-    .nav-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: currentColor;
-      opacity: 0.65;
-    }
-
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .icon-btn {
-      background: rgba(255, 255, 255, 0.04);
-      color: var(--text-main);
-      border: 1px solid var(--border);
-      padding: 7px 12px;
-      border-radius: 9px;
-      font-size: 0.82rem;
-      font-weight: 500;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: all 0.18s ease;
-    }
-
-    .icon-btn:hover {
-      background: rgba(255, 255, 255, 0.09);
-      border-color: var(--border-bright);
+    .otp-digit:focus {
       transform: translateY(-1px);
-    }
-
-    .user-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 4px 10px 4px 5px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--border);
-      cursor: pointer;
-      transition: background 0.18s ease, border-color 0.18s ease;
-    }
-
-    .user-chip:hover {
-      background: rgba(255, 255, 255, 0.09);
-      border-color: var(--border-bright);
-    }
-
-    .user-avatar {
-      width: 26px;
-      height: 26px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #ec4899, #6366f1);
-      display: grid;
-      place-items: center;
-      font-size: 0.74rem;
-      font-weight: 700;
-      color: #fff;
-      text-transform: uppercase;
-    }
-
-    .user-name {
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: var(--text-main);
-      max-width: 110px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .kbd {
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: 0.7rem;
-      padding: 1px 5px;
-      border-radius: 4px;
-      background: rgba(0, 0, 0, 0.35);
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-    }
-
-    /* Main Workspace Content */
-    main#workspace-main {
-      flex: 1;
-      display: none;
-      flex-direction: column;
-    }
-
-    body.authenticated main#workspace-main {
-      display: flex;
-    }
-
-    /* Launcher View */
-    #launcher-view {
-      max-width: 1140px;
-      width: 100%;
-      margin: 0 auto;
-      padding: 44px 24px 64px;
-      animation: fadeUp 0.45s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(14px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .hero {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: flex-end;
-      justify-content: space-between;
-      gap: 24px;
-      margin-bottom: 34px;
-    }
-
-    .hero-copy {
-      max-width: 640px;
-    }
-
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.78rem;
-      font-weight: 600;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: #38bdf8;
-      background: rgba(56, 189, 248, 0.1);
-      border: 1px solid rgba(56, 189, 248, 0.25);
-      padding: 5px 12px;
-      border-radius: 999px;
-      margin-bottom: 14px;
-    }
-
-    .hero h1 {
-      font-size: clamp(1.9rem, 3.8vw, 2.75rem);
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      line-height: 1.12;
-      margin-bottom: 12px;
-      background: linear-gradient(135deg, #ffffff 30%, #cbd5e1 70%, #818cf8 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .hero p {
-      color: var(--text-muted);
-      font-size: 1rem;
-      line-height: 1.6;
-    }
-
-    /* Search & Filter Bar */
-    .toolbar {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      min-width: 260px;
-      flex: 0 1 320px;
-    }
-
-    .search-box {
-      position: relative;
-      width: 100%;
-    }
-
-    .search-box input {
-      width: 100%;
-      background: var(--glass);
-      border: 1px solid var(--border);
-      color: var(--text-main);
-      padding: 10px 38px 10px 36px;
-      border-radius: 12px;
-      font-size: 0.88rem;
-      outline: none;
-      backdrop-filter: blur(12px);
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .search-box input:focus {
-      border-color: var(--accent-primary);
-      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
-    }
-
-    .search-icon {
-      position: absolute;
-      left: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-dim);
-      font-size: 0.9rem;
-      pointer-events: none;
-    }
-
-    .search-shortcut {
-      position: absolute;
-      right: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-    }
-
-    /* App Cards Grid */
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 20px;
-    }
-
-    .card {
-      position: relative;
-      background: var(--glass);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 20px;
-      box-shadow: var(--shadow-card);
-      overflow: hidden;
-      transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.25s ease, box-shadow 0.25s ease;
-    }
-
-    .card::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(
-        420px circle at var(--mouse-x, 50%) var(--mouse-y, 0%),
-        var(--card-glow, rgba(99, 102, 241, 0.16)),
-        transparent 60%
-      );
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      pointer-events: none;
-    }
-
-    .card:hover {
-      transform: translateY(-5px);
-      border-color: var(--card-border, rgba(99, 102, 241, 0.5));
-      box-shadow: 0 26px 50px -15px rgba(0, 0, 0, 0.8);
-    }
-
-    .card:hover::before {
-      opacity: 1;
-    }
-
-    .card-accent-strip {
-      position: absolute;
-      top: 0;
-      left: 24px;
-      right: 24px;
-      height: 2px;
-      border-radius: 0 0 4px 4px;
-      background: var(--card-gradient);
-      opacity: 0.85;
-    }
-
-    .card-header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    .icon-wrap {
-      width: 50px;
-      height: 50px;
-      border-radius: 14px;
-      background: var(--card-gradient);
-      display: grid;
-      place-items: center;
-      font-size: 1.45rem;
-      box-shadow: 0 10px 24px -6px var(--card-shadow);
-      flex-shrink: 0;
-    }
-
-    .meta-badges {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 6px;
-    }
-
-    .category-pill {
-      font-size: 0.7rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      padding: 3px 9px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid var(--border);
-      color: var(--text-main);
-    }
-
-    .file-tag {
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: 0.72rem;
-      color: var(--text-dim);
-    }
-
-    .card-body h2 {
-      font-size: 1.2rem;
-      font-weight: 700;
-      letter-spacing: -0.015em;
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .shortcut-hint {
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: 0.72rem;
-      font-weight: 500;
-      color: var(--text-dim);
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--border);
-      padding: 2px 6px;
-      border-radius: 5px;
-    }
-
-    .card-body p {
-      color: var(--text-muted);
-      font-size: 0.9rem;
-      line-height: 1.55;
-      margin-bottom: 14px;
-    }
-
-    .feature-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-
-    .feature-tag {
-      font-size: 0.74rem;
-      color: var(--text-muted);
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      padding: 3px 8px;
-      border-radius: 6px;
-    }
-
-    .card-actions {
-      display: flex;
-      gap: 8px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .launch-btn {
-      flex: 1;
-      background: var(--card-gradient);
-      color: #fff;
-      border: none;
-      padding: 10px 12px;
-      border-radius: 11px;
-      font-size: 0.86rem;
-      font-weight: 600;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 7px;
-      box-shadow: 0 8px 20px -6px var(--card-shadow);
-      transition: filter 0.18s ease, transform 0.18s ease;
-    }
-
-    .launch-btn:hover {
-      filter: brightness(1.1);
-      transform: translateY(-1px);
-    }
-
-    .action-square-btn {
-      background: rgba(255, 255, 255, 0.04);
-      color: var(--text-muted);
-      border: 1px solid var(--border);
-      padding: 10px 11px;
-      border-radius: 11px;
-      font-size: 0.85rem;
-      font-weight: 500;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
-      transition: all 0.18s ease;
-    }
-
-    .action-square-btn:hover {
-      color: #fff;
-      background: rgba(255, 255, 255, 0.1);
-      border-color: var(--border-bright);
-    }
-
-    /* Footer Hints */
-    .hub-footer {
-      margin-top: 32px;
-      padding-top: 18px;
-      border-top: 1px solid var(--border);
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      color: var(--text-dim);
-      font-size: 0.82rem;
-    }
-
-    .key-hints {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 14px;
-    }
-
-    .key-hints span {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    /* Embedded App Stage */
-    #stage-view {
-      display: none;
-      flex: 1;
-      flex-direction: column;
-      height: calc(100vh - 64px);
-    }
-
-    #stage-view.active {
-      display: flex;
-    }
-
-    .stage-bar {
-      background: rgba(13, 18, 30, 0.92);
-      border-bottom: 1px solid var(--border);
-      padding: 8px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      font-size: 0.84rem;
-    }
-
-    .stage-meta {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      color: var(--text-muted);
-    }
-
-    .stage-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      padding: 4px 10px;
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--border);
-      color: var(--text-main);
-      font-weight: 600;
-    }
-
-    .stage-controls {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .frame-wrapper {
-      position: relative;
-      flex: 1;
-      display: flex;
-      background: #0b0e17;
-    }
-
-    #app-frame {
-      flex: 1;
-      width: 100%;
-      height: 100%;
-      border: none;
-      background: #ffffff;
-    }
-
-    /* Fullscreen Stage Mode */
-    body.stage-fullscreen header {
-      display: none;
-    }
-
-    body.stage-fullscreen #stage-view {
-      height: 100vh;
-    }
-
-    /* Shared Auth Form & Modal Styles */
-    .auth-tabs {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6px;
-      background: rgba(0, 0, 0, 0.28);
-      padding: 4px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      margin-bottom: 18px;
-    }
-
-    .auth-tab {
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      padding: 8px;
-      border-radius: 7px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-
-    .auth-tab.active {
-      background: var(--accent-primary);
-      color: #fff;
-    }
-
-    .form-group {
-      margin-bottom: 14px;
-    }
-
-    .form-group label {
-      display: block;
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--text-muted);
-      margin-bottom: 6px;
-    }
-
-    .form-group input {
-      width: 100%;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--border);
-      color: var(--text-main);
-      padding: 10px 12px;
-      border-radius: 10px;
-      font-size: 0.9rem;
-      outline: none;
-    }
-
-    .form-group input:focus {
-      border-color: var(--accent-primary);
-      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
-    }
-
-    .auth-error {
-      color: #fda4af;
-      background: rgba(244, 63, 94, 0.12);
-      border: 1px solid rgba(244, 63, 94, 0.3);
-      padding: 8px 12px;
-      border-radius: 8px;
-      font-size: 0.82rem;
-      margin-bottom: 14px;
-      display: none;
-    }
-
-    .submit-auth-btn {
-      width: 100%;
-      background: linear-gradient(135deg, #6366f1, #06b6d4);
-      color: #fff;
-      border: none;
-      padding: 11px;
-      border-radius: 11px;
-      font-size: 0.92rem;
-      font-weight: 650;
-      cursor: pointer;
-      margin-top: 4px;
-      box-shadow: 0 10px 24px -8px rgba(99, 102, 241, 0.55);
-    }
-
-    .submit-auth-btn:hover {
-      filter: brightness(1.08);
-    }
-
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(3, 5, 10, 0.78);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      z-index: 60;
-    }
-
-    .modal-backdrop.open {
-      display: flex;
-      animation: fadeIn 0.2s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    .profile-card {
-      width: 100%;
-      max-width: 420px;
-      background: #101625;
-      border: 1px solid var(--border-bright);
-      border-radius: var(--radius-xl);
-      padding: 28px;
-      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .modal-close {
-      position: absolute;
-      top: 18px;
-      right: 18px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-      width: 30px;
-      height: 30px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 0.9rem;
-    }
-
-    .modal-close:hover {
-      color: #fff;
-      background: rgba(255, 255, 255, 0.12);
-    }
-
-    .profile-summary {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 14px;
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--border);
-    }
-
-    .profile-avatar-lg {
-      width: 46px;
-      height: 46px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #ec4899, #6366f1);
-      display: grid;
-      place-items: center;
-      font-size: 1.15rem;
-      font-weight: 800;
-      color: #fff;
-    }
-
-    .secondary-btn {
-      background: rgba(255, 255, 255, 0.06);
-      color: var(--text-main);
-      border: 1px solid var(--border);
-      padding: 10px;
-      border-radius: 10px;
-      font-size: 0.86rem;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .secondary-btn:hover {
-      background: rgba(255, 255, 255, 0.11);
-    }
-
-    .danger-btn {
-      background: rgba(244, 63, 94, 0.14);
-      color: #fda4af;
-      border: 1px solid rgba(244, 63, 94, 0.35);
-      padding: 10px;
-      border-radius: 10px;
-      font-size: 0.86rem;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .danger-btn:hover {
-      background: rgba(244, 63, 94, 0.24);
-    }
-
-    .delete-confirm-box {
-      padding: 14px;
-      border-radius: 12px;
-      background: rgba(244, 63, 94, 0.08);
-      border: 1px solid rgba(244, 63, 94, 0.32);
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .delete-confirm-box input {
-      width: 100%;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--border);
-      color: var(--text-main);
-      padding: 10px 12px;
-      border-radius: 10px;
-      font-size: 0.9rem;
-      outline: none;
-    }
-
-    .delete-confirm-box input:focus {
-      border-color: var(--danger);
-      box-shadow: 0 0 0 3px rgba(244, 63, 94, 0.2);
-    }
-
-    .delete-confirm-actions {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
-
-    /* Toast Notification */
-    .toast {
-      position: fixed;
-      bottom: 22px;
-      right: 22px;
-      background: #131b2e;
-      color: var(--text-main);
-      border: 1px solid var(--border-bright);
-      padding: 12px 16px;
-      border-radius: 12px;
-      font-size: 0.86rem;
-      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.7);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      transform: translateY(120%);
-      opacity: 0;
-      transition: all 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
-      z-index: 80;
-    }
-
-    .toast.show {
-      transform: translateY(0);
-      opacity: 1;
-    }
-
-    @media (max-width: 820px) {
-      .onboarding-shell {
-        grid-template-columns: 1fr;
-      }
-      .onboarding-pitch {
-        border-right: none;
-        border-bottom: 1px solid var(--border);
-        padding: 26px;
-      }
-      .onboarding-form-pane {
-        padding: 26px;
-      }
-    }
-
-    @media (max-width: 760px) {
-      header {
-        padding: 0 14px;
-      }
-      .brand-badge,
-      .header-actions .label-text,
-      .kbd {
-        display: none;
-      }
-      #launcher-view {
-        padding: 28px 16px 44px;
-      }
     }
   </style>
 </head>
-<body>
-  <div class="ambient-canvas" aria-hidden="true">
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-    <div class="grid-overlay"></div>
-  </div>
+<body class="bg-slate-950 text-slate-100 antialiased selection:bg-indigo-500 selection:text-white">
 
-  <!-- FIRST SCREEN: Step 1 Account Form + Step 2 OTP Verification -->
-  <section id="onboarding-screen" aria-label="TinyMinyCreative Account Creation and OTP Verification">
-    <div class="onboarding-shell">
-      <div class="onboarding-pitch">
-        <div>
-          <div class="brand-row">
-            <div class="brand-logo">✦</div>
-            <span>TinyMinyCreative</span>
-          </div>
+  <!-- Toast Banner (replaces alert/confirm) -->
+  <div id="toast-banner" class="fixed bottom-5 right-5 z-50 max-w-sm rounded-xl border border-slate-700/80 bg-slate-900/95 px-4 py-3 text-sm font-medium text-slate-100 shadow-2xl transition-all duration-200 opacity-0 translate-y-3 pointer-events-none"></div>
 
-          <div class="pitch-copy" style="margin-top: 28px;">
-            <h1>Two-step verification for TinyMinyCreative</h1>
-            <p>Enter your account details first, then verify your 6-digit one-time passcode (OTP) to unlock all 4 studio apps.</p>
-          </div>
+  <!-- ===================================================================== -->
+  <!-- GATED AUTHENTICATION SCREEN (SHOWN UNTIL VERIFIED LOGIN/REGISTRATION) -->
+  <!-- ===================================================================== -->
+  <section id="auth-gate" class="min-h-screen w-full flex items-center justify-center p-4 sm:p-6 bg-gradient-to-br from-slate-950 via-indigo-950/45 to-slate-950">
+    <div class="w-full max-w-2xl rounded-2xl border border-slate-800 bg-slate-900/95 p-6 sm:p-8 shadow-2xl glass-card">
 
-          <div class="app-preview-pills">
-            <div class="preview-pill"><span>🧊</span><span>Blender Lite V2</span></div>
-            <div class="preview-pill"><span>📘</span><span>EasyLearn</span></div>
-            <div class="preview-pill"><span>✂️</span><span>EasyliyEdit</span></div>
-            <div class="preview-pill"><span>🎨</span><span>PixelForge</span></div>
+      <!-- Circular Studio Branding Header -->
+      <div class="flex flex-col items-center text-center mb-6">
+        <div class="h-20 w-20 rounded-full p-1 bg-gradient-to-tr from-indigo-500 via-sky-500 to-emerald-400 shadow-lg shadow-indigo-500/20 mb-3">
+          <div class="h-full w-full rounded-full bg-slate-950 flex items-center justify-center overflow-hidden">
+            <svg viewBox="0 0 80 80" class="w-14 h-14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="TinyMinyCreative Logo">
+              <circle cx="40" cy="40" r="32" stroke="url(#tmcGrad)" stroke-width="4" stroke-dasharray="14 6"/>
+              <path d="M24 44L34 26L44 44H24Z" fill="#6366f1"/>
+              <circle cx="50" cy="46" r="10" fill="#2563eb"/>
+              <circle cx="50" cy="46" r="4" fill="#eff6ff"/>
+              <defs>
+                <linearGradient id="tmcGrad" x1="8" y1="8" x2="72" y2="72" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#818cf8"/>
+                  <stop offset="0.5" stop-color="#38bdf8"/>
+                  <stop offset="1" stop-color="#34d399"/>
+                </linearGradient>
+              </defs>
+            </svg>
           </div>
         </div>
-
-        <div class="pitch-foot">TinyMinyCreative Studio Hub • Account + 2nd-Step OTP</div>
+        <span class="inline-flex items-center gap-1.5 rounded-full border border-indigo-500/30 bg-indigo-500/10 px-3 py-0.5 text-xs font-semibold text-indigo-300 mb-2">
+          TinyMinyCreative • Verified Studio Gate
+        </span>
+        <h1 id="auth-gate-title" class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">Create Your Studio Account</h1>
+        <p id="auth-gate-subtitle" class="mt-1 text-xs sm:text-sm text-slate-400 max-w-lg">
+          Complete the 4-step studio onboarding and 6-digit email OTP verification to unlock Blender Lite, EasyLearn, EasyliyEdit, and PixelForge.
+        </p>
       </div>
 
-      <div class="onboarding-form-pane">
-        <!-- STEP 1: CREDENTIALS -->
-        <div id="step-credentials-pane">
-          <div class="step-badge">Step 1 of 2 • Account</div>
+      <!-- Mode Switcher: Create Account vs Sign In vs Password Recovery -->
+      <div class="grid grid-cols-2 gap-2 rounded-xl border border-slate-800 bg-slate-950/90 p-1.5 mb-6">
+        <button type="button" id="auth-tab-register" onclick="switchAuthMode('register')"
+          class="rounded-lg bg-indigo-600 text-white py-2 text-xs sm:text-sm font-bold shadow transition">
+          Create Studio Account
+        </button>
+        <button type="button" id="auth-tab-signin" onclick="switchAuthMode('signin')"
+          class="rounded-lg text-slate-400 hover:text-white py-2 text-xs sm:text-sm font-semibold transition">
+          Sign In (<span id="saved-accounts-count">0</span>)
+        </button>
+      </div>
 
-          <div class="auth-tabs">
-            <button id="tab-signup" class="auth-tab active" type="button" onclick="switchAuthMode('signup')">Create Account</button>
-            <button id="tab-login" class="auth-tab" type="button" onclick="switchAuthMode('login')">Sign In</button>
+      <!-- =================================================================== -->
+      <!-- PANEL A: 4-STEP ACCOUNT CREATION WIZARD                             -->
+      <!-- =================================================================== -->
+      <div id="auth-panel-register" class="space-y-5">
+        <!-- 4-Step Progress Bar & Step Indicators -->
+        <div class="space-y-2.5">
+          <div class="grid grid-cols-4 gap-2 text-center">
+            <div id="step-pill-1" class="rounded-xl border border-indigo-500 bg-indigo-500/15 px-2 py-2">
+              <p class="text-[10px] font-mono uppercase text-indigo-300">Step 1</p>
+              <p class="text-xs font-bold text-white truncate">Identity</p>
+            </div>
+            <div id="step-pill-2" class="rounded-xl border border-slate-800 bg-slate-950/70 px-2 py-2">
+              <p class="text-[10px] font-mono uppercase text-slate-500">Step 2</p>
+              <p class="text-xs font-semibold text-slate-400 truncate">Tier & Role</p>
+            </div>
+            <div id="step-pill-3" class="rounded-xl border border-slate-800 bg-slate-950/70 px-2 py-2">
+              <p class="text-[10px] font-mono uppercase text-slate-500">Step 3</p>
+              <p class="text-xs font-semibold text-slate-400 truncate">Security</p>
+            </div>
+            <div id="step-pill-4" class="rounded-xl border border-slate-800 bg-slate-950/70 px-2 py-2">
+              <p class="text-[10px] font-mono uppercase text-slate-500">Step 4</p>
+              <p class="text-xs font-semibold text-slate-400 truncate">OTP Verify</p>
+            </div>
           </div>
-
-          <h2 id="auth-title" style="font-size: 1.35rem; font-weight: 750; margin-bottom: 6px;">Create Your Account</h2>
-          <p id="auth-subtitle" style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 18px;">We'll send a 6-digit OTP code to your email for second-step verification.</p>
-
-          <div id="auth-error" class="auth-error"></div>
-
-          <form id="auth-form" onsubmit="handleCredentialsSubmit(event)">
-            <div id="name-field-group" class="form-group">
-              <label for="auth-name">Creator Display Name</label>
-              <input id="auth-name" type="text" placeholder="e.g., Alex Rivera" autocomplete="name" />
-            </div>
-
-            <div class="form-group">
-              <label for="auth-email">Email Address (for OTP)</label>
-              <input id="auth-email" type="email" placeholder="you@example.com" required autocomplete="email" />
-            </div>
-
-            <div class="form-group">
-              <label for="auth-password">Password</label>
-              <input id="auth-password" type="password" placeholder="At least 6 characters" required minlength="6" autocomplete="current-password" />
-            </div>
-
-            <button id="auth-submit-btn" class="submit-auth-btn" type="submit">Send OTP &amp; Continue →</button>
-          </form>
+          <div class="h-1.5 w-full rounded-full bg-slate-800 overflow-hidden">
+            <div id="wizard-progress-bar" class="h-full w-1/4 bg-gradient-to-r from-indigo-500 via-blue-500 to-emerald-400 transition-all duration-300"></div>
+          </div>
         </div>
 
-        <!-- STEP 2: OTP VERIFICATION -->
-        <div id="step-otp-pane" style="display: none;">
-          <div class="step-badge">Step 2 of 2 • Second-Step OTP</div>
+        <!-- STEP 1: IDENTITY & STUDIO HANDLE -->
+        <div id="wizard-step-1" class="wizard-step space-y-4">
+          <div class="flex items-center gap-3.5 rounded-xl border border-slate-800 bg-slate-950/70 p-3.5">
+            <div id="avatar-preview-circle" class="h-12 w-12 shrink-0 rounded-full bg-indigo-600 flex items-center justify-center text-sm font-extrabold text-white shadow">
+              TM
+            </div>
+            <div class="min-w-0 flex-1">
+              <p id="preview-identity-name" class="text-sm font-bold text-white truncate">Your Studio Identity</p>
+              <p id="preview-identity-handle" class="text-xs font-mono text-indigo-300 truncate">@creator</p>
+            </div>
+            <div class="flex items-center gap-1.5" aria-label="Choose Avatar Color">
+              <button type="button" onclick="selectAvatarColor('indigo')" class="h-6 w-6 rounded-full bg-indigo-600 ring-2 ring-white/80 transition" title="Indigo"></button>
+              <button type="button" onclick="selectAvatarColor('blue')" class="h-6 w-6 rounded-full bg-blue-600 hover:scale-110 transition" title="EasyLearn Blue"></button>
+              <button type="button" onclick="selectAvatarColor('emerald')" class="h-6 w-6 rounded-full bg-emerald-500 hover:scale-110 transition" title="Emerald"></button>
+              <button type="button" onclick="selectAvatarColor('amber')" class="h-6 w-6 rounded-full bg-amber-500 hover:scale-110 transition" title="Amber"></button>
+            </div>
+          </div>
 
-          <h2 style="font-size: 1.35rem; font-weight: 750; margin-bottom: 6px;">Verify Your OTP</h2>
-          <p id="otp-sent-desc" style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 14px;">
-            Enter the 6-digit verification code sent to <strong id="otp-target-email" style="color: var(--text-main);"></strong>.
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <div>
+              <label for="reg-name" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">Full Display Name *</label>
+              <input id="reg-name" type="text" oninput="syncIdentityPreview()" placeholder="e.g. Aarav Sharma"
+                class="w-full rounded-xl border border-slate-700 bg-slate-950/90 px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none" />
+            </div>
+            <div>
+              <div class="flex items-center justify-between mb-1.5">
+                <label for="reg-handle" class="text-xs font-semibold uppercase tracking-wider text-slate-300">Studio Handle *</label>
+                <span id="handle-status-badge" class="text-[11px] font-mono text-slate-400">min 3 chars</span>
+              </div>
+              <div class="relative">
+                <span class="absolute left-3.5 top-2.5 text-sm font-mono text-slate-400">@</span>
+                <input id="reg-handle" type="text" oninput="normalizeAndCheckHandle()" placeholder="aarav_studio"
+                  class="w-full rounded-xl border border-slate-700 bg-slate-950/90 pl-8 pr-3.5 py-2.5 text-sm font-mono text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none" />
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label for="reg-email" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">Studio Email Address *</label>
+            <input id="reg-email" type="email" placeholder="aarav@tinyminy.studio"
+              class="w-full rounded-xl border border-slate-700 bg-slate-950/90 px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none" />
+          </div>
+
+          <p id="step-1-error" class="hidden rounded-xl border border-rose-500/40 bg-rose-500/10 px-3.5 py-2 text-xs font-medium text-rose-300"></p>
+
+          <div class="flex justify-end pt-1">
+            <button type="button" onclick="advanceWizardStep(2)"
+              class="rounded-xl bg-indigo-600 hover:bg-indigo-500 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-indigo-600/25 transition">
+              Continue to Tier & Role &rarr;
+            </button>
+          </div>
+        </div>
+
+        <!-- STEP 2: ACCOUNT TIER & ROLE CONFIGURATION -->
+        <div id="wizard-step-2" class="wizard-step hidden space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <div>
+              <label for="reg-org-tier" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">Workspace Tier *</label>
+              <select id="reg-org-tier" onchange="syncTierFields()"
+                class="w-full rounded-xl border border-slate-700 bg-slate-950/90 px-3.5 py-2.5 text-sm text-white focus:border-indigo-500 focus:outline-none">
+                <option value="Personal">Personal Studio (10+ char password)</option>
+                <option value="Business">Business Team (12+ char password)</option>
+              </select>
+            </div>
+            <div>
+              <label for="reg-age-tier" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">Learner / Access Tier *</label>
+              <select id="reg-age-tier" onchange="syncTierFields()"
+                class="w-full rounded-xl border border-slate-700 bg-slate-950/90 px-3.5 py-2.5 text-sm text-white focus:border-indigo-500 focus:outline-none">
+                <option value="Adult">Adult — Full Pro Studio Access</option>
+                <option value="Child">Child — Parent-Monitored Safe Mode</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Conditional Business Fields -->
+          <div id="business-extra-fields" class="hidden rounded-xl border border-indigo-500/35 bg-indigo-950/25 p-4 space-y-3">
+            <p class="text-xs font-bold uppercase tracking-wider text-indigo-300">Business Team Workspace Details</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label for="reg-org-name" class="block text-xs font-semibold text-slate-300 mb-1">Organization / School Name *</label>
+                <input id="reg-org-name" type="text" placeholder="e.g. TinyTactix Design Lab"
+                  class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none" />
+              </div>
+              <div>
+                <label for="reg-team-size" class="block text-xs font-semibold text-slate-300 mb-1">Team Seat Count</label>
+                <select id="reg-team-size" class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white focus:border-indigo-500 focus:outline-none">
+                  <option value="2-10 seats">2–10 Creators</option>
+                  <option value="11-50 seats">11–50 Creators / Classroom</option>
+                  <option value="50+ seats">50+ Enterprise / Campus</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Conditional Child Safety Fields -->
+          <div id="child-extra-fields" class="hidden rounded-xl border border-blue-500/35 bg-blue-950/25 p-4 space-y-3">
+            <p class="text-xs font-bold uppercase tracking-wider text-blue-300">Parent / Guardian Verification (Child Tier)</p>
+            <div>
+              <label for="reg-parent-email" class="block text-xs font-semibold text-slate-300 mb-1">Parent / Guardian Email *</label>
+              <input id="reg-parent-email" type="email" placeholder="parent@family.com"
+                class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none" />
+            </div>
+            <label class="flex items-start gap-2.5 text-xs text-slate-300 cursor-pointer">
+              <input id="reg-parent-consent" type="checkbox" class="mt-0.5 rounded border-slate-600 bg-slate-950 text-blue-600 focus:ring-blue-500" />
+              <span>I confirm a parent or legal guardian approves this Child Studio account and EasyLearn guided mode.</span>
+            </label>
+          </div>
+
+          <p id="role-tier-summary" class="rounded-xl border border-slate-800 bg-slate-950/70 px-3.5 py-2.5 text-xs text-slate-300">
+            Personal + Adult grants unrestricted access to Blender Lite, EasyLearn, EasyliyEdit, and PixelForge with a 10-character minimum password policy.
           </p>
 
-          <!-- Local sandbox code helper (no backend server) -->
-          <div class="otp-preview-box">
-            <span>Sandbox OTP Code:</span>
-            <span id="sandbox-otp-display" class="otp-code-chip">000000</span>
+          <p id="step-2-error" class="hidden rounded-xl border border-rose-500/40 bg-rose-500/10 px-3.5 py-2 text-xs font-medium text-rose-300"></p>
+
+          <div class="flex items-center justify-between gap-3 pt-1">
+            <button type="button" onclick="goToWizardStep(1)"
+              class="rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 px-4 py-2.5 text-sm font-semibold text-slate-200 transition">
+              &larr; Back
+            </button>
+            <button type="button" onclick="advanceWizardStep(3)"
+              class="rounded-xl bg-indigo-600 hover:bg-indigo-500 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-indigo-600/25 transition">
+              Continue to Security &rarr;
+            </button>
+          </div>
+        </div>
+
+        <!-- STEP 3: SECURITY, RECOVERY & STUDIO PREFERENCES -->
+        <div id="wizard-step-3" class="wizard-step hidden space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <label for="reg-password" class="text-xs font-semibold uppercase tracking-wider text-slate-300">Create Password *</label>
+                <button type="button" onclick="toggleRegPasswordVisibility()" class="text-[11px] font-semibold text-indigo-300 hover:underline">Show/Hide</button>
+              </div>
+              <input id="reg-password" type="password" oninput="evaluatePasswordChecklist()" placeholder="Enter strong password"
+                class="w-full rounded-xl border border-slate-700 bg-slate-950/90 px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none" />
+            </div>
+            <div>
+              <label for="reg-password-confirm" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">Confirm Password *</label>
+              <input id="reg-password-confirm" type="password" oninput="evaluatePasswordChecklist()" placeholder="Re-enter password"
+                class="w-full rounded-xl border border-slate-700 bg-slate-950/90 px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none" />
+            </div>
           </div>
 
-          <div id="otp-error" class="auth-error"></div>
-
-          <form id="otp-form" onsubmit="handleOtpVerify(event)">
-            <div class="form-group">
-              <label for="otp-input">6-Digit One-Time Password</label>
-              <input
-                id="otp-input"
-                class="otp-input"
-                type="text"
-                inputmode="numeric"
-                pattern="[0-9]{6}"
-                maxlength="6"
-                placeholder="••••••"
-                required
-                autocomplete="one-time-code"
-              />
+          <!-- Live Security Checklist -->
+          <div class="rounded-xl border border-slate-800 bg-slate-950/75 p-3.5 space-y-2">
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-semibold text-slate-300">Password Policy Checklist</span>
+              <span id="pwd-strength-pill" class="font-mono text-rose-400">Incomplete</span>
             </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-xs">
+              <div id="chk-length" class="text-slate-400">&#9675; Minimum 10 characters</div>
+              <div id="chk-case" class="text-slate-400">&#9675; Uppercase &amp; lowercase letters</div>
+              <div id="chk-number" class="text-slate-400">&#9675; At least 1 number (0–9)</div>
+              <div id="chk-special" class="text-slate-400">&#9675; At least 1 symbol (!@#$...)</div>
+              <div id="chk-match" class="text-slate-400 sm:col-span-2">&#9675; Passwords match</div>
+            </div>
+          </div>
 
-            <button class="submit-auth-btn" type="submit">Verify OTP &amp; Enter TinyMinyCreative</button>
-          </form>
+          <!-- Security Question & Primary App -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <div>
+              <label for="reg-sec-question" class="block text-xs font-semibold text-slate-300 mb-1">Security Recovery Question *</label>
+              <select id="reg-sec-question" class="w-full rounded-xl border border-slate-700 bg-slate-950/90 px-3 py-2 text-xs text-white focus:border-indigo-500 focus:outline-none">
+                <option value="What was your first creative project?">What was your first creative project?</option>
+                <option value="What is the name of your favorite teacher?">What is the name of your favorite teacher?</option>
+                <option value="What city was your studio founded in?">What city was your studio founded in?</option>
+              </select>
+            </div>
+            <div>
+              <label for="reg-sec-answer" class="block text-xs font-semibold text-slate-300 mb-1">Recovery Answer *</label>
+              <input id="reg-sec-answer" type="text" placeholder="e.g. Robot Walk Cycle"
+                class="w-full rounded-xl border border-slate-700 bg-slate-950/90 px-3 py-2 text-xs text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none" />
+            </div>
+          </div>
 
-          <div class="otp-actions-row">
-            <button id="resend-otp-btn" class="link-btn" type="button" onclick="resendOtp()" disabled>
-              Resend OTP (<span id="otp-timer">60</span>s)
+          <div>
+            <label for="reg-primary-app" class="block text-xs font-semibold text-slate-300 mb-1">Primary Launch Focus</label>
+            <select id="reg-primary-app" class="w-full rounded-xl border border-slate-700 bg-slate-950/90 px-3.5 py-2 text-xs text-white focus:border-indigo-500 focus:outline-none">
+              <option value="EasyLearn">EasyLearn (Blue Learning Edition)</option>
+              <option value="Blender Lite">Blender Lite (3D Modeling &amp; Rigs)</option>
+              <option value="EasyliyEdit">EasyliyEdit (Dual-Monitor Video NLE)</option>
+              <option value="PixelForge">PixelForge (Sprite &amp; Visual Studio)</option>
+            </select>
+          </div>
+
+          <label class="flex items-start gap-2.5 text-xs text-slate-300 cursor-pointer">
+            <input id="reg-terms-agree" type="checkbox" class="mt-0.5 rounded border-slate-600 bg-slate-950 text-indigo-600 focus:ring-indigo-500" />
+            <span>I agree to the TinyMinyCreative Studio Terms and understand my profile is stored locally in this browser with OTP verification.</span>
+          </label>
+
+          <p id="step-3-error" class="hidden rounded-xl border border-rose-500/40 bg-rose-500/10 px-3.5 py-2 text-xs font-medium text-rose-300"></p>
+
+          <div class="flex items-center justify-between gap-3 pt-1">
+            <button type="button" onclick="goToWizardStep(2)"
+              class="rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 px-4 py-2.5 text-sm font-semibold text-slate-200 transition">
+              &larr; Back
             </button>
-            <button class="link-btn" type="button" onclick="backToStepOne()">← Change Email</button>
+            <button type="button" onclick="advanceWizardStep(4)"
+              class="rounded-xl bg-sky-600 hover:bg-sky-500 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-sky-600/25 transition">
+              Dispatch 6-Digit Email OTP &rarr;
+            </button>
+          </div>
+        </div>
+
+        <!-- STEP 4: 6-DIGIT OTP VERIFICATION -->
+        <div id="wizard-step-4" class="wizard-step hidden space-y-4">
+          <div class="rounded-xl border border-sky-500/35 bg-sky-950/30 p-4 text-center space-y-2">
+            <div class="inline-flex items-center gap-2 rounded-full bg-sky-500/15 border border-sky-400/30 px-3 py-0.5 text-[11px] font-bold uppercase tracking-wider text-sky-300">
+              Simulated Studio Inbox Dispatch
+            </div>
+            <p class="text-xs text-slate-300">
+              We generated a 6-digit verification code for <span id="otp-target-email" class="font-bold text-white"></span>:
+            </p>
+            <div class="flex items-center justify-center gap-2.5">
+              <span id="generated-otp-display" class="rounded-xl border border-sky-400/50 bg-slate-950 px-4 py-2 font-mono text-xl font-extrabold tracking-[0.28em] text-sky-300">000000</span>
+              <button type="button" onclick="autofillOtpBoxes()"
+                class="rounded-xl border border-sky-500/40 bg-sky-600/20 hover:bg-sky-600/30 px-3 py-2 text-xs font-semibold text-sky-200 transition">
+                Auto-Fill
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-semibold uppercase tracking-wider text-slate-300">Enter 6-Digit Verification Code</span>
+              <button type="button" id="resend-otp-btn" onclick="regenerateRegistrationOtp()"
+                class="text-xs font-semibold text-sky-400 hover:underline">
+                Resend Code
+              </button>
+            </div>
+            <div id="otp-boxes-container" class="grid grid-cols-6 gap-2 sm:gap-3">
+              <input type="text" inputmode="numeric" maxlength="1" class="otp-digit h-12 sm:h-14 w-full rounded-xl border border-slate-700 bg-slate-950 text-center font-mono text-xl font-extrabold text-white focus:border-sky-400 focus:outline-none" />
+              <input type="text" inputmode="numeric" maxlength="1" class="otp-digit h-12 sm:h-14 w-full rounded-xl border border-slate-700 bg-slate-950 text-center font-mono text-xl font-extrabold text-white focus:border-sky-400 focus:outline-none" />
+              <input type="text" inputmode="numeric" maxlength="1" class="otp-digit h-12 sm:h-14 w-full rounded-xl border border-slate-700 bg-slate-950 text-center font-mono text-xl font-extrabold text-white focus:border-sky-400 focus:outline-none" />
+              <input type="text" inputmode="numeric" maxlength="1" class="otp-digit h-12 sm:h-14 w-full rounded-xl border border-slate-700 bg-slate-950 text-center font-mono text-xl font-extrabold text-white focus:border-sky-400 focus:outline-none" />
+              <input type="text" inputmode="numeric" maxlength="1" class="otp-digit h-12 sm:h-14 w-full rounded-xl border border-slate-700 bg-slate-950 text-center font-mono text-xl font-extrabold text-white focus:border-sky-400 focus:outline-none" />
+              <input type="text" inputmode="numeric" maxlength="1" class="otp-digit h-12 sm:h-14 w-full rounded-xl border border-slate-700 bg-slate-950 text-center font-mono text-xl font-extrabold text-white focus:border-sky-400 focus:outline-none" />
+            </div>
+          </div>
+
+          <p id="step-4-error" class="hidden rounded-xl border border-rose-500/40 bg-rose-500/10 px-3.5 py-2 text-xs font-medium text-rose-300"></p>
+
+          <div class="flex items-center justify-between gap-3 pt-1">
+            <button type="button" onclick="goToWizardStep(3)"
+              class="rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 px-4 py-2.5 text-sm font-semibold text-slate-200 transition">
+              &larr; Edit Details
+            </button>
+            <button type="button" onclick="completeOtpRegistration()"
+              class="rounded-xl bg-emerald-600 hover:bg-emerald-500 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-emerald-600/25 transition">
+              Verify &amp; Launch Studio Hub
+            </button>
           </div>
         </div>
       </div>
+
+      <!-- =================================================================== -->
+      <!-- PANEL B: SIGN IN TO EXISTING ACCOUNT + FORGOT PASSWORD RECOVERY     -->
+      <!-- =================================================================== -->
+      <div id="auth-panel-signin" class="hidden space-y-4">
+        <div id="saved-accounts-quicklist" class="space-y-2"></div>
+
+        <form id="signin-form" onsubmit="handleSignInSubmit(event)" class="space-y-4">
+          <div>
+            <label for="signin-identifier" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">Email or @StudioHandle</label>
+            <input id="signin-identifier" type="text" required placeholder="aarav@tinyminy.studio or @aarav_studio"
+              class="w-full rounded-xl border border-slate-700 bg-slate-950/90 px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none" />
+          </div>
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <label for="signin-password" class="text-xs font-semibold uppercase tracking-wider text-slate-300">Password</label>
+              <button type="button" onclick="toggleForgotPasswordBox()" class="text-xs font-semibold text-sky-400 hover:underline">
+                Forgot Password?
+              </button>
+            </div>
+            <input id="signin-password" type="password" required placeholder="Enter your account password"
+              class="w-full rounded-xl border border-slate-700 bg-slate-950/90 px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none" />
+          </div>
+
+          <p id="signin-error" class="hidden rounded-xl border border-rose-500/40 bg-rose-500/10 px-3.5 py-2 text-xs font-medium text-rose-300"></p>
+
+          <button type="submit" class="w-full rounded-xl bg-indigo-600 hover:bg-indigo-500 px-4 py-3 text-sm font-bold text-white shadow-lg shadow-indigo-600/25 transition">
+            Sign In to Studio Workspace
+          </button>
+        </form>
+
+        <!-- Forgot Password Recovery Sub-Card -->
+        <div id="forgot-password-box" class="hidden rounded-xl border border-amber-500/35 bg-amber-950/20 p-4 space-y-3">
+          <p class="text-xs font-bold uppercase tracking-wider text-amber-300">Account Password Recovery</p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <input id="recover-email" type="email" placeholder="Registered email"
+              class="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white placeholder-slate-500 focus:border-amber-400 focus:outline-none" />
+            <input id="recover-answer" type="text" placeholder="Security question answer"
+              class="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white placeholder-slate-500 focus:border-amber-400 focus:outline-none" />
+          </div>
+          <input id="recover-new-password" type="password" placeholder="New password (min 10 or 12 chars)"
+            class="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white placeholder-slate-500 focus:border-amber-400 focus:outline-none" />
+          <p id="recover-feedback" class="hidden text-xs font-medium text-amber-200"></p>
+          <button type="button" onclick="handlePasswordReset()"
+            class="w-full rounded-lg bg-amber-500 hover:bg-amber-400 px-3.5 py-2 text-xs font-bold text-slate-950 transition">
+            Reset Password &amp; Sign In
+          </button>
+        </div>
+      </div>
+
     </div>
   </section>
 
-  <!-- TOP HEADER (Visible after Account + OTP Verification) -->
-  <header>
-    <div class="brand" onclick="showHome()" title="Return to TinyMinyCreative">
-      <div class="brand-logo">✦</div>
-      <span>TinyMinyCreative</span>
-      <span class="brand-badge">4 Apps</span>
-    </div>
-
-    <nav class="nav-tabs" aria-label="TinyMinyCreative Apps">
-      <button class="nav-btn active" data-view="home" onclick="showHome()">
-        <span>Home</span>
-      </button>
-      <button class="nav-btn" data-app="blender" onclick="openApp('blender')">
-        <span class="nav-dot" style="color: #fb923c;"></span>
-        <span>Blender Lite V2</span>
-      </button>
-      <button class="nav-btn" data-app="easylearn" onclick="openApp('easylearn')">
-        <span class="nav-dot" style="color: #38bdf8;"></span>
-        <span>EasyLearn</span>
-      </button>
-      <button class="nav-btn" data-app="easyliyedit" onclick="openApp('easyliyedit')">
-        <span class="nav-dot" style="color: #34d399;"></span>
-        <span>EasyliyEdit</span>
-      </button>
-      <button class="nav-btn" data-app="pixelforge" onclick="openApp('pixelforge')">
-        <span class="nav-dot" style="color: #f472b6;"></span>
-        <span>PixelForge</span>
-      </button>
-    </nav>
-
-    <div class="header-actions">
-      <button id="stage-download-btn" class="icon-btn" onclick="downloadActiveApp()" style="display: none;" title="Download this app's HTML file">
-        <span>⬇</span>
-        <span class="label-text">Download</span>
-      </button>
-      <button id="reload-btn" class="icon-btn" onclick="reloadFrame()" style="display: none;" title="Reload active app">
-        <span>↻</span>
-        <span class="label-text">Reload</span>
-      </button>
-      <a id="external-link" class="icon-btn" href="#" target="_blank" rel="noopener" style="display: none;" title="Open in separate browser tab">
-        <span>↗</span>
-        <span class="label-text">New Tab</span>
-      </a>
-
-      <div id="header-user-chip" class="user-chip" onclick="openProfileModal()" title="Manage TinyMinyCreative Account">
-        <div id="header-avatar" class="user-avatar">U</div>
-        <span id="header-username" class="user-name">User</span>
-      </div>
-    </div>
-  </header>
-
-  <!-- MAIN WORKSPACE (Visible after Account + OTP Verification) -->
-  <main id="workspace-main">
-    <section id="launcher-view">
-      <div class="hero">
-        <div class="hero-copy">
-          <div class="eyebrow">✦ TinyMinyCreative Hub</div>
-          <h1>TinyMinyCreative</h1>
-          <p>Launch in your browser or download standalone offline copies of Blender Lite V2, EasyLearn, EasyliyEdit, and PixelForge.</p>
-        </div>
-
-        <div class="toolbar">
-          <div class="search-box">
-            <span class="search-icon">⌕</span>
-            <input id="app-search" type="search" placeholder="Filter apps or tools..." autocomplete="off" />
-            <span class="kbd search-shortcut">/</span>
+  <!-- ===================================================================== -->
+  <!-- MAIN WORKSPACE (HIDDEN UNTIL VERIFIED REGISTRATION OR SIGN-IN)        -->
+  <!-- ===================================================================== -->
+  <div id="main-workspace" class="hidden min-h-screen flex flex-col">
+    <!-- Top Navigation Bar -->
+    <header class="sticky top-0 z-30 border-b border-slate-800/90 bg-slate-900/90 backdrop-blur-md">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+        <!-- Circular Brand + Title -->
+        <div class="flex items-center gap-3 min-w-0">
+          <div class="h-10 w-10 shrink-0 rounded-full p-0.5 bg-gradient-to-tr from-indigo-500 via-sky-500 to-emerald-400">
+            <div class="h-full w-full rounded-full bg-slate-950 flex items-center justify-center">
+              <svg viewBox="0 0 80 80" class="w-7 h-7" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="40" cy="40" r="30" stroke="#818cf8" stroke-width="4" stroke-dasharray="12 6"/>
+                <path d="M25 45L34 28L43 45H25Z" fill="#6366f1"/>
+                <circle cx="51" cy="47" r="9" fill="#3b82f6"/>
+              </svg>
+            </div>
+          </div>
+          <div class="truncate">
+            <span class="text-sm sm:text-base font-extrabold tracking-tight text-white">TinyMinyCreative</span>
+            <span class="hidden md:inline-block ml-2 rounded-full bg-blue-500/15 border border-blue-500/30 px-2 py-0.5 text-[11px] font-semibold text-blue-300">
+              Studio &amp; App Hub
+            </span>
           </div>
         </div>
-      </div>
 
-      <div class="grid" id="app-grid"></div>
-
-      <footer class="hub-footer">
-        <div>TinyMinyCreative — 2-Step OTP Verified • Browser Launch &amp; Offline HTML Downloads ready.</div>
-        <div class="key-hints">
-          <span><kbd class="kbd">1</kbd>–<kbd class="kbd">4</kbd> Quick Launch</span>
-          <span><kbd class="kbd">/</kbd> Search</span>
-          <span><kbd class="kbd">Esc</kbd> Back Home</span>
-        </div>
-      </footer>
-    </section>
-
-    <section id="stage-view">
-      <div class="stage-bar">
-        <div class="stage-meta">
-          <span class="stage-pill">
-            <span id="stage-icon">✦</span>
-            <span id="stage-title">App Name</span>
-          </span>
-          <span id="stage-file" class="file-tag"></span>
-        </div>
-        <div class="stage-controls">
-          <button class="icon-btn" onclick="downloadActiveApp()" title="Download standalone HTML file">
-            <span>⬇</span>
-            <span class="label-text">Download App</span>
+        <!-- Primary Navigation Tabs -->
+        <nav class="flex items-center gap-1 sm:gap-2" aria-label="Primary Workspace Sections">
+          <button type="button" id="nav-launcher" onclick="switchWorkspaceSection('launcher')"
+            class="nav-tab rounded-xl px-3 py-2 text-xs sm:text-sm font-semibold bg-blue-600 text-white transition">
+            Launcher
           </button>
-          <button class="icon-btn" onclick="toggleFullscreen()" title="Toggle theater mode">
-            <span id="fs-icon">⛶</span>
-            <span class="label-text" id="fs-label">Expand</span>
+          <button type="button" id="nav-account" onclick="switchWorkspaceSection('account')"
+            class="nav-tab rounded-xl px-3 py-2 text-xs sm:text-sm font-semibold text-slate-300 hover:bg-slate-800 hover:text-white transition">
+            Account &amp; Security
           </button>
-          <button class="icon-btn" onclick="showHome()">← Back to TinyMinyCreative</button>
-        </div>
-      </div>
-      <div class="frame-wrapper">
-        <iframe id="app-frame" title="Embedded TinyMinyCreative App"></iframe>
-      </div>
-    </section>
-  </main>
+          <button type="button" id="nav-info" onclick="switchWorkspaceSection('info')"
+            class="nav-tab rounded-xl px-3 py-2 text-xs sm:text-sm font-semibold text-slate-300 hover:bg-slate-800 hover:text-white transition">
+            FAQs &amp; Credits
+          </button>
+        </nav>
 
-  <!-- Profile Modal (Clicking User Chip) -->
-  <div id="profile-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="profile-modal-title">
-    <div class="profile-card">
-      <button class="modal-close" onclick="closeProfileModal()" aria-label="Close">✕</button>
-      <div>
-        <h2 id="profile-modal-title" style="font-size: 1.25rem; font-weight: 750; margin-bottom: 4px;">TinyMinyCreative Account</h2>
-        <p style="color: var(--text-muted); font-size: 0.85rem;">2-step OTP verified • Ready to launch or download all 4 apps.</p>
-      </div>
-
-      <div class="profile-summary">
-        <div id="profile-avatar-lg" class="profile-avatar-lg">U</div>
-        <div>
-          <div id="profile-name" style="font-weight: 700; font-size: 1rem;">Creator</div>
-          <div id="profile-email" style="color: var(--text-muted); font-size: 0.84rem;">you@example.com</div>
-          <div id="profile-joined" style="color: var(--text-dim); font-size: 0.75rem; margin-top: 2px;">Member</div>
-        </div>
-      </div>
-
-      <button class="secondary-btn" type="button" onclick="logoutUser()">Sign Out (Requires OTP Next Time)</button>
-
-      <div id="delete-step-initial">
-        <button class="danger-btn" style="width: 100%;" type="button" onclick="startDeleteOtpFlow()">Send OTP to Delete Account</button>
-      </div>
-
-      <div id="delete-step-confirm" class="delete-confirm-box" style="display: none;">
-        <p style="font-size: 0.84rem; color: #fecdd3; font-weight: 600;">Verify 6-Digit OTP to Delete Account</p>
-        <p style="font-size: 0.79rem; color: var(--text-muted); line-height: 1.45;">
-          Enter the 6-digit OTP sent to <strong id="delete-otp-email" style="color: #fff;"></strong> to permanently delete this account.
-        </p>
-
-        <div class="otp-preview-box" style="margin-bottom: 2px;">
-          <span>Sandbox Delete OTP:</span>
-          <span id="delete-sandbox-otp" class="otp-code-chip">000000</span>
-        </div>
-
-        <input
-          id="delete-otp-input"
-          class="otp-input"
-          type="text"
-          inputmode="numeric"
-          pattern="[0-9]{6}"
-          maxlength="6"
-          placeholder="••••••"
-          autocomplete="one-time-code"
-        />
-
-        <div id="delete-error" class="auth-error" style="margin-bottom: 0;"></div>
-
-        <div class="otp-actions-row" style="margin-top: 2px;">
-          <button id="delete-resend-btn" class="link-btn" type="button" onclick="resendDeleteOtp()" disabled>
-            Resend OTP (<span id="delete-otp-timer">60</span>s)
+        <!-- Active User Pill & Lock/Sign Out Button -->
+        <div class="flex items-center gap-2.5">
+          <div class="hidden sm:flex flex-col items-end leading-tight">
+            <span id="header-user-name" class="text-xs font-bold text-white">Creator</span>
+            <span id="header-user-badges" class="text-[11px] text-blue-300 font-medium">@handle • Personal • Adult</span>
+          </div>
+          <button type="button" onclick="lockSession()"
+            class="rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 px-3 py-2 text-xs font-semibold text-slate-200 transition">
+            Lock / Switch
           </button>
         </div>
-
-        <div class="delete-confirm-actions">
-          <button class="secondary-btn" type="button" onclick="cancelDeleteConfirmation()">Cancel</button>
-          <button class="danger-btn" type="button" onclick="deleteAccountWithOtp()">Verify &amp; Delete</button>
-        </div>
       </div>
-    </div>
+    </header>
+
+    <!-- Workspace Body -->
+    <main class="mx-auto w-full max-w-7xl flex-1 px-4 sm:px-6 py-6 sm:py-8 space-y-8">
+
+      <!-- =================================================================== -->
+      <!-- SECTION 1: UNIFIED APP LAUNCHER                                     -->
+      <!-- =================================================================== -->
+      <section id="section-launcher" class="workspace-section space-y-6">
+        <!-- Hero Banner with EasyLearn Blue Palette Accent -->
+        <div class="rounded-2xl border border-slate-800 bg-gradient-to-r from-slate-900 via-blue-950/50 to-indigo-950/50 p-5 sm:p-7 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
+          <div class="space-y-2 max-w-2xl">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="inline-flex items-center gap-1.5 rounded-full bg-blue-600/20 border border-blue-400/40 px-3 py-1 text-xs font-semibold text-blue-200">
+                <span class="h-2 w-2 rounded-full bg-blue-400"></span>
+                EasyLearn Blue Palette Active
+              </span>
+              <span id="launcher-mode-pill" class="inline-flex items-center rounded-full bg-slate-800 px-3 py-1 text-xs font-medium text-slate-300">
+                Personal • Adult
+              </span>
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+              All TinyMinyCreative Apps in One Place
+            </h2>
+            <p class="text-sm text-slate-300">
+              Launch, download standalone <span class="font-mono text-xs text-blue-300">.html</span> builds directly from <span class="font-semibold text-white">TinyTactix/TinyMinyCreative</span> on GitHub, and organize studio projects across Blender Lite, EasyLearn, EasyliyEdit, and PixelForge.
+            </p>
+          </div>
+
+          <!-- EasyLearn Palette Theme Selector -->
+          <div class="rounded-xl border border-blue-500/30 bg-slate-950/80 p-3.5 flex flex-col gap-2 min-w-[230px]">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-blue-300">EasyLearn Palette Accent</span>
+            <div class="grid grid-cols-2 gap-2">
+              <button type="button" id="palette-cobalt-btn" onclick="setEasyLearnPalette('cobalt')"
+                class="rounded-lg bg-blue-600 text-white px-3 py-1.5 text-xs font-bold shadow transition">
+                Cobalt Blue
+              </button>
+              <button type="button" id="palette-sky-btn" onclick="setEasyLearnPalette('sky')"
+                class="rounded-lg border border-slate-700 bg-slate-900 text-slate-300 hover:border-sky-400 px-3 py-1.5 text-xs font-semibold transition">
+                Sky Study
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Search & Category Filter Bar -->
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+          <div class="relative flex-1 max-w-md">
+            <input id="app-search-input" type="text" oninput="renderAppsGrid()" placeholder="Search apps by name, feature, or tag..."
+              class="w-full rounded-xl border border-slate-800 bg-slate-900 px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none" />
+          </div>
+
+          <div id="category-filters" class="flex flex-wrap items-center gap-2">
+            <button type="button" data-cat="All" onclick="setCategoryFilter('All')"
+              class="cat-btn rounded-xl bg-blue-600 text-white px-3.5 py-2 text-xs font-bold transition">All Apps</button>
+            <button type="button" data-cat="3D & Modeling" onclick="setCategoryFilter('3D & Modeling')"
+              class="cat-btn rounded-xl border border-slate-800 bg-slate-900 text-slate-300 hover:border-slate-700 px-3.5 py-2 text-xs font-semibold transition">3D &amp; Modeling</button>
+            <button type="button" data-cat="Education" onclick="setCategoryFilter('Education')"
+              class="cat-btn rounded-xl border border-slate-800 bg-slate-900 text-slate-300 hover:border-blue-500/50 px-3.5 py-2 text-xs font-semibold transition">Education</button>
+            <button type="button" data-cat="Video Editing" onclick="setCategoryFilter('Video Editing')"
+              class="cat-btn rounded-xl border border-slate-800 bg-slate-900 text-slate-300 hover:border-slate-700 px-3.5 py-2 text-xs font-semibold transition">Video Editing</button>
+            <button type="button" data-cat="Design & Art" onclick="setCategoryFilter('Design & Art')"
+              class="cat-btn rounded-xl border border-slate-800 bg-slate-900 text-slate-300 hover:border-slate-700 px-3.5 py-2 text-xs font-semibold transition">Design &amp; Art</button>
+          </div>
+        </div>
+
+        <!-- Pre-Populated Apps Grid -->
+        <div id="apps-grid" class="grid grid-cols-1 md:grid-cols-2 gap-5"></div>
+
+        <!-- Project & Download Manager -->
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/80 p-5 sm:p-6 space-y-5">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
+            <div>
+              <h3 class="text-lg font-bold text-white">Project &amp; GitHub Download Manager</h3>
+              <p class="text-xs text-slate-400">Track studio projects across apps and manage your TinyTactix/TinyMinyCreative GitHub download links.</p>
+            </div>
+            <button type="button" onclick="exportHubManifest()"
+              class="rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 px-3.5 py-2 text-xs font-semibold text-slate-200 transition">
+              Export Hub JSON
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Add Project Entry -->
+            <form onsubmit="handleAddProject(event)" class="rounded-xl border border-slate-800 bg-slate-950/70 p-4 space-y-3">
+              <h4 class="text-sm font-bold text-white">Add Project Entry</h4>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label for="proj-app-select" class="block text-xs text-slate-400 mb-1">App</label>
+                  <select id="proj-app-select" class="w-full rounded-lg border border-slate-800 bg-slate-900 px-3 py-2 text-xs text-white focus:border-blue-500 focus:outline-none">
+                    <option value="Blender Lite">Blender Lite</option>
+                    <option value="EasyLearn">EasyLearn</option>
+                    <option value="EasyliyEdit">EasyliyEdit</option>
+                    <option value="PixelForge">PixelForge</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="proj-name-input" class="block text-xs text-slate-400 mb-1">Project Title</label>
+                  <input id="proj-name-input" type="text" required placeholder="e.g. Robot Walk Cycle v2"
+                    class="w-full rounded-lg border border-slate-800 bg-slate-900 px-3 py-2 text-xs text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none" />
+                </div>
+              </div>
+              <button type="submit" class="w-full rounded-lg bg-blue-600 hover:bg-blue-500 px-3.5 py-2 text-xs font-bold text-white transition">
+                Save Project to Hub
+              </button>
+              <div id="projects-list" class="pt-2 space-y-2 max-h-48 overflow-y-auto"></div>
+            </form>
+
+            <!-- GitHub Download Link Configuration -->
+            <div class="rounded-xl border border-slate-800 bg-slate-950/70 p-4 space-y-3">
+              <div class="flex items-center justify-between gap-2">
+                <h4 class="text-sm font-bold text-white">GitHub Download Links</h4>
+                <button type="button" onclick="resetOfficialGitHubLinks()"
+                  class="text-[11px] font-semibold text-sky-400 hover:underline">
+                  Reset to Official TinyTactix Links
+                </button>
+              </div>
+              <p class="text-xs text-slate-400">All four official TinyTactix/TinyMinyCreative file URLs are pre-configured below.</p>
+              <div id="github-links-form" class="space-y-2.5"></div>
+              <button type="button" onclick="saveGitHubLinks()"
+                class="w-full rounded-lg bg-indigo-600 hover:bg-indigo-500 px-3.5 py-2 text-xs font-bold text-white transition">
+                Save GitHub Download Links
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =================================================================== -->
+      <!-- SECTION 2: ACCOUNT & SECURITY (FULL PROFILE + 2-STEP OTP DELETION)  -->
+      <!-- =================================================================== -->
+      <section id="section-account" class="workspace-section hidden space-y-6">
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/90 p-6 space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+            <div class="flex items-center gap-3.5">
+              <div id="profile-initials" class="h-14 w-14 rounded-full bg-indigo-600 flex items-center justify-center text-lg font-extrabold text-white">
+                TM
+              </div>
+              <div>
+                <div class="flex flex-wrap items-center gap-2">
+                  <h2 id="profile-display-name" class="text-xl font-extrabold text-white">Creator Name</h2>
+                  <span id="profile-handle-badge" class="rounded-md bg-slate-800 px-2 py-0.5 font-mono text-xs text-indigo-300">@creator</span>
+                </div>
+                <p id="profile-display-email" class="text-xs text-slate-400">creator@tinyminy.studio</p>
+                <div class="mt-1.5 flex flex-wrap gap-1.5">
+                  <span id="profile-org-badge" class="rounded-full bg-indigo-500/15 border border-indigo-500/30 px-2.5 py-0.5 text-[11px] font-semibold text-indigo-300">Personal</span>
+                  <span id="profile-age-badge" class="rounded-full bg-blue-500/15 border border-blue-500/30 px-2.5 py-0.5 text-[11px] font-semibold text-blue-300">Adult</span>
+                  <span class="rounded-full bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-300">OTP Verified</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Detailed Metadata Grid -->
+          <div id="profile-details-grid" class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs"></div>
+
+          <!-- Update Role / Tier Preferences -->
+          <form onsubmit="handleUpdateTierPreferences(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
+            <div>
+              <label for="edit-org-tier" class="block text-xs font-semibold text-slate-300 mb-1">Workspace Tier</label>
+              <select id="edit-org-tier" class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-2.5 text-sm text-white focus:border-blue-500 focus:outline-none">
+                <option value="Personal">Personal Studio</option>
+                <option value="Business">Business Team</option>
+              </select>
+            </div>
+            <div>
+              <label for="edit-age-tier" class="block text-xs font-semibold text-slate-300 mb-1">Learner / Access Tier</label>
+              <select id="edit-age-tier" class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-2.5 text-sm text-white focus:border-blue-500 focus:outline-none">
+                <option value="Adult">Adult</option>
+                <option value="Child">Child</option>
+              </select>
+            </div>
+            <button type="submit" class="rounded-xl bg-blue-600 hover:bg-blue-500 px-4 py-2.5 text-sm font-bold text-white transition">
+              Update Tier Settings
+            </button>
+          </form>
+
+          <!-- 2-Step Self-Service Account Deletion Zone -->
+          <div class="rounded-2xl border border-rose-500/40 bg-rose-950/20 p-5 space-y-4">
+            <div>
+              <h3 class="text-base font-bold text-rose-300">Self-Service Account Deletion (2-Step OTP Verified)</h3>
+              <p class="mt-1 text-xs text-rose-200/80">
+                Permanently deletes your active account from this browser. Request a deletion OTP, type <span class="font-mono underline">DELETE</span>, and enter the 6-digit confirmation code.
+              </p>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-3">
+              <button type="button" onclick="dispatchDeletionOtp()"
+                class="rounded-xl border border-rose-500/40 bg-rose-600/20 hover:bg-rose-600/30 px-3.5 py-2 text-xs font-bold text-rose-200 transition">
+                Generate Deletion OTP
+              </button>
+              <span id="deletion-otp-preview" class="hidden rounded-lg border border-rose-500/40 bg-slate-950 px-3 py-1.5 font-mono text-xs font-bold text-rose-300"></span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
+              <div>
+                <label for="delete-confirm-input" class="block text-xs font-semibold text-rose-200 mb-1">
+                  Type <span class="font-mono underline">DELETE</span>
+                </label>
+                <input id="delete-confirm-input" type="text" placeholder="DELETE"
+                  class="w-full rounded-xl border border-rose-500/40 bg-slate-950 px-3.5 py-2 text-sm font-mono text-white placeholder-slate-600 focus:border-rose-400 focus:outline-none" />
+              </div>
+              <div>
+                <label for="delete-otp-input" class="block text-xs font-semibold text-rose-200 mb-1">
+                  6-Digit Deletion OTP
+                </label>
+                <input id="delete-otp-input" type="text" inputmode="numeric" maxlength="6" placeholder="000000"
+                  class="w-full rounded-xl border border-rose-500/40 bg-slate-950 px-3.5 py-2 text-sm font-mono text-white placeholder-slate-600 focus:border-rose-400 focus:outline-none" />
+              </div>
+              <button type="button" onclick="handleSelfDeleteAccount()"
+                class="rounded-xl bg-rose-600 hover:bg-rose-500 px-4 py-2 text-sm font-bold text-white transition">
+                Permanently Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =================================================================== -->
+      <!-- SECTION 3: FAQS & CREATOR CREDITS                                   -->
+      <!-- =================================================================== -->
+      <section id="section-info" class="workspace-section hidden space-y-6">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- FAQs -->
+          <div class="rounded-2xl border border-slate-800 bg-slate-900/90 p-6 space-y-4">
+            <h2 class="text-xl font-extrabold text-white">Frequently Asked Questions</h2>
+            <div class="space-y-3 text-sm">
+              <div class="rounded-xl border border-slate-800 bg-slate-950/70 p-4">
+                <p class="font-bold text-blue-300">How does the 4-step account creation process work?</p>
+                <p class="mt-1 text-xs text-slate-300 leading-relaxed">
+                  You configure your Identity &amp; @StudioHandle, choose Personal/Business and Adult/Child safety tiers, set a strong password with a security recovery question, and verify via a 6-digit email OTP before unlocking the launcher.
+                </p>
+              </div>
+              <div class="rounded-xl border border-slate-800 bg-slate-950/70 p-4">
+                <p class="font-bold text-blue-300">How do the GitHub Download buttons work?</p>
+                <p class="mt-1 text-xs text-slate-300 leading-relaxed">
+                  Clicking <span class="font-semibold text-white">Download .html</span> fetches the standalone HTML file directly from <span class="font-mono text-blue-300">TinyTactix/TinyMinyCreative</span> on GitHub and saves it to your computer, while <span class="font-semibold text-white">GitHub Link</span> opens the repository file page.
+                </p>
+              </div>
+              <div class="rounded-xl border border-slate-800 bg-slate-950/70 p-4">
+                <p class="font-bold text-blue-300">How does the EasyLearn blue palette work?</p>
+                <p class="mt-1 text-xs text-slate-300 leading-relaxed">
+                  EasyLearn uses a dedicated blue study palette (Cobalt Blue or Sky Study) across its launcher card, badges, and interactive controls.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Creator Credits -->
+          <div class="rounded-2xl border border-slate-800 bg-slate-900/90 p-6 space-y-4">
+            <h2 class="text-xl font-extrabold text-white">Creator Credits &amp; Official GitHub Lineup</h2>
+            <p class="text-sm text-slate-300 leading-relaxed">
+              Built by <span class="font-bold text-white">TinyTactix / TinyMinyCreative</span> — download or launch all four standalone web applications below.
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+              <div class="rounded-xl border border-slate-800 bg-slate-950/70 p-3.5">
+                <p class="text-xs font-bold text-amber-400">Blender Lite (Blender_Lite_V2.html)</p>
+                <p class="text-xs text-slate-400 mt-0.5">3D Modeling, Reliefs, Rigs &amp; JS Scripts</p>
+              </div>
+              <div class="rounded-xl border border-blue-500/40 bg-blue-950/30 p-3.5">
+                <p class="text-xs font-bold text-blue-300">EasyLearn (Easy_Learn.html)</p>
+                <p class="text-xs text-slate-300 mt-0.5">Grammar &amp; Literature Tracks + Daily Tests</p>
+              </div>
+              <div class="rounded-xl border border-slate-800 bg-slate-950/70 p-3.5">
+                <p class="text-xs font-bold text-indigo-400">EasyliyEdit (Easyliy_Edit.html)</p>
+                <p class="text-xs text-slate-400 mt-0.5">Dual-Monitor Timeline &amp; WebM Export</p>
+              </div>
+              <div class="rounded-xl border border-slate-800 bg-slate-950/70 p-3.5">
+                <p class="text-xs font-bold text-emerald-400">PixelForge (Pixel_Forge.html)</p>
+                <p class="text-xs text-slate-400 mt-0.5">Sprite, Canvas &amp; Visual Asset Studio</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
   </div>
 
-  <!-- Toast -->
-  <div id="toast" class="toast" role="status" aria-live="polite">
-    <span>✦</span>
-    <span id="toast-msg">Notification</span>
+  <!-- ===================================================================== -->
+  <!-- APP LAUNCH MODAL (INTERACTIVE LAUNCHER & DIRECT GITHUB DOWNLOAD)      -->
+  <!-- ===================================================================== -->
+  <div id="launch-modal" class="fixed inset-0 z-40 hidden items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
+    <div class="w-full max-w-lg rounded-2xl border border-slate-700 bg-slate-900 p-6 shadow-2xl space-y-4">
+      <div class="flex items-start justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <div id="modal-app-badge" class="h-11 w-11 rounded-full flex items-center justify-center font-extrabold text-sm text-white bg-blue-600">
+            EL
+          </div>
+          <div>
+            <h3 id="modal-app-title" class="text-lg font-extrabold text-white">App Name</h3>
+            <p id="modal-app-meta" class="text-xs text-slate-400">Category • Version</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeLaunchModal()" class="rounded-lg border border-slate-700 bg-slate-800 hover:bg-slate-700 px-2.5 py-1 text-xs font-semibold text-slate-300">
+          Close
+        </button>
+      </div>
+
+      <p id="modal-app-desc" class="text-sm text-slate-300 leading-relaxed"></p>
+
+      <div id="modal-tier-banner" class="rounded-xl border border-blue-500/30 bg-blue-950/30 px-3.5 py-2.5 text-xs text-blue-200"></div>
+
+      <div class="flex flex-wrap items-center justify-end gap-2.5 pt-2 border-t border-slate-800">
+        <a id="modal-github-link" href="#" target="_blank" rel="noopener noreferrer"
+          class="rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 px-3.5 py-2 text-xs font-bold text-slate-100 transition">
+          Open on GitHub
+        </a>
+        <button type="button" onclick="triggerDirectAppDownload(modalAppId)"
+          class="rounded-xl border border-emerald-500/40 bg-emerald-600/20 hover:bg-emerald-600/30 px-3.5 py-2 text-xs font-bold text-emerald-200 transition">
+          Download .html
+        </button>
+        <button type="button" onclick="recordQuickProjectFromModal()"
+          class="rounded-xl bg-blue-600 hover:bg-blue-500 px-4 py-2 text-xs font-bold text-white transition">
+          + Add Quick Project
+        </button>
+      </div>
+    </div>
   </div>
 
   <script>
-    // Optional real email OTP webhook (e.g., EmailJS REST endpoint or your own API)
-    const OTP_WEBHOOK_CONFIG = {
-      enabled: false,
-      endpoint: "", // e.g., "https://api.emailjs.com/api/v1.0/email/send"
-      buildPayload: (toEmail, userName, otpCode, purpose = "verification") => ({
-        to_email: toEmail,
-        to_name: userName,
-        otp_code: otpCode,
-        purpose
-      })
+    const STORAGE_KEY = 'tinyminycreative_hub_v2';
+
+    const LEGACY_GITHUB_URLS = {
+      'blender-lite': 'https://github.com/tinyminycreative/blender-lite/releases',
+      'easylearn': 'https://github.com/tinyminycreative/easylearn/releases',
+      'easyliyedit': 'https://github.com/tinyminycreative/easyliyedit/releases',
+      'pixelforge': 'https://github.com/tinyminycreative/pixelforge/releases'
     };
 
-    const APPS = [
+    const DEFAULT_APPS = [
       {
-        id: "blender",
-        key: "1",
-        name: "Blender Lite V2",
-        file: "Blender Lite V2.html",
-        category: "3D Studio",
-        icon: "🧊",
-        description: "Lightweight browser-based 3D viewport for sculpting, primitives, lighting, and quick scene previews.",
-        tags: ["3D Mesh", "Viewport", "Lighting"],
-        gradient: "linear-gradient(135deg, #f97316, #ea580c)",
-        glow: "rgba(249, 115, 22, 0.22)",
-        border: "rgba(249, 115, 22, 0.55)",
-        shadow: "rgba(234, 88, 12, 0.45)"
+        id: 'blender-lite',
+        name: 'Blender Lite',
+        fileName: 'Blender_Lite_V2.html',
+        shortCode: 'BL',
+        category: '3D & Modeling',
+        version: 'v2.0',
+        palette: 'amber',
+        description: 'Browser-based 3D modeling, image-to-3D relief & plane import, Laplacian mesh smoothing, articulated robot gait rig, and live JavaScript procedural scripting.',
+        highlights: ['Image-to-3D Relief', 'Robot Rig & Gait', 'Live JS IDE'],
+        githubUrl: 'https://github.com/TinyTactix/TinyMinyCreative/blob/main/Blender_Lite_V2.html'
       },
       {
-        id: "easylearn",
-        key: "2",
-        name: "EasyLearn",
-        file: "Easylean.html",
-        category: "Study Hub",
-        icon: "📘",
-        description: "Focused interactive learning companion built for structured notes, practice drills, and rapid recall.",
-        tags: ["Interactive", "Notes", "Practice"],
-        gradient: "linear-gradient(135deg, #0ea5e9, #2563eb)",
-        glow: "rgba(14, 165, 233, 0.22)",
-        border: "rgba(14, 165, 233, 0.55)",
-        shadow: "rgba(37, 99, 235, 0.45)"
+        id: 'easylearn',
+        name: 'EasyLearn',
+        fileName: 'Easy_Learn.html',
+        shortCode: 'EL',
+        category: 'Education',
+        version: 'v2.4 • Blue Edition',
+        palette: 'blue',
+        description: 'Structured English grammar and literature learning across 75+ levels per track with Adult and Child modes, daily dynamic quizzes, coach Q&A, and a signature blue study palette.',
+        highlights: ['Blue Learning Palette', '75+ Grammar & Lit Levels', 'Child & Adult Modes'],
+        githubUrl: 'https://github.com/TinyTactix/TinyMinyCreative/blob/main/Easy_Learn.html'
       },
       {
-        id: "easyliyedit",
-        key: "3",
-        name: "EasyliyEdit",
-        file: "EasyliyEdit.html",
-        category: "Editor",
-        icon: "✂️",
-        description: "Fast, distraction-free editing workspace engineered for clean revisions and instant formatting.",
-        tags: ["Quick Edit", "Clean UI", "Export"],
-        gradient: "linear-gradient(135deg, #10b981, #059669)",
-        glow: "rgba(16, 185, 129, 0.22)",
-        border: "rgba(16, 185, 129, 0.55)",
-        shadow: "rgba(5, 150, 105, 0.45)"
+        id: 'easyliyedit',
+        name: 'EasyliyEdit',
+        fileName: 'Easyliy_Edit.html',
+        shortCode: 'EE',
+        category: 'Video Editing',
+        version: 'v9.8 Ultra',
+        palette: 'indigo',
+        description: 'Multi-track dual-monitor NLE video studio with razor cutting, keyframe motion interpolation, 3-band audio EQ, and WebM canvas export.',
+        highlights: ['Dual Monitor NLE', 'Keyframe Motion', 'WebM Canvas Export'],
+        githubUrl: 'https://github.com/TinyTactix/TinyMinyCreative/blob/main/Easyliy_Edit.html'
       },
       {
-        id: "pixelforge",
-        key: "4",
-        name: "PixelForge",
-        file: "PixelForge.html",
-        category: "Pixel Art",
-        icon: "🎨",
-        description: "Precision pixel canvas and sprite workshop with palettes, layers, and crisp asset exports.",
-        tags: ["Sprites", "Palettes", "Canvas"],
-        gradient: "linear-gradient(135deg, #ec4899, #8b5cf6)",
-        glow: "rgba(236, 72, 153, 0.22)",
-        border: "rgba(236, 72, 153, 0.55)",
-        shadow: "rgba(139, 92, 246, 0.45)"
+        id: 'pixelforge',
+        name: 'PixelForge',
+        fileName: 'Pixel_Forge.html',
+        shortCode: 'PF',
+        category: 'Design & Art',
+        version: 'v1.6 Studio',
+        palette: 'emerald',
+        description: 'Lightweight pixel art, sprite sheet, and visual asset builder tailored for TinyMinyCreative UI icons, badges, and game props.',
+        highlights: ['Sprite & Icon Grid', 'Color Swatches', 'Fast PNG Export'],
+        githubUrl: 'https://github.com/TinyTactix/TinyMinyCreative/blob/main/Pixel_Forge.html'
       }
     ];
 
-    const STORAGE_USERS_KEY = "tmc_users_v1";
-    const STORAGE_SESSION_KEY = "tmc_session_v1";
+    let state = loadState();
+    let wizardStep = 1;
+    let selectedAvatarColor = 'indigo';
+    let pendingRegistration = null;
+    let pendingOtp = null;
+    let pendingDeletionOtp = null;
+    let activeCategory = 'All';
+    let modalAppId = null;
 
-    const appMap = Object.fromEntries(APPS.map(app => [app.id, app]));
-    let activeAppId = null;
-    let authMode = "signup";
-    let pendingAuthPayload = null; // { mode, name, email, password, joined }
-    let activeOtpCode = null;
-    let otpExpiresAt = 0;
-    let resendInterval = null;
+    function getDefaultState() {
+      return {
+        accounts: [],
+        activeEmail: null,
+        sessionUnlocked: false,
+        easyLearnPalette: 'cobalt',
+        githubLinks: DEFAULT_APPS.reduce((acc, app) => {
+          acc[app.id] = app.githubUrl;
+          return acc;
+        }, {}),
+        projects: [
+          { id: 'p-1', appName: 'EasyLearn', title: 'Blue Palette Grammar Pack — Tenses', updatedAt: 'Today' },
+          { id: 'p-2', appName: 'Blender Lite', title: 'Articulated Robot Gait Scene', updatedAt: 'Today' },
+          { id: 'p-3', appName: 'EasyliyEdit', title: 'Studio Launch Reel (16:9)', updatedAt: 'Today' },
+          { id: 'p-4', appName: 'PixelForge', title: 'Circular Hub Emblems v1', updatedAt: 'Today' }
+        ]
+      };
+    }
 
-    let deleteOtpCode = null;
-    let deleteOtpExpiresAt = 0;
-    let deleteResendInterval = null;
-
-    /* ---------- Account & Screen State ---------- */
-    function getUsers() {
+    function loadState() {
       try {
-        return JSON.parse(localStorage.getItem(STORAGE_USERS_KEY) || "[]");
-      } catch {
-        return [];
-      }
-    }
+        const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('tinyminycreative_hub_v1');
+        if (!raw) return getDefaultState();
+        const parsed = JSON.parse(raw);
+        const fallback = getDefaultState();
+        const mergedLinks = { ...fallback.githubLinks, ...(parsed.githubLinks || {}) };
 
-    function saveUsers(users) {
-      localStorage.setItem(STORAGE_USERS_KEY, JSON.stringify(users));
-    }
-
-    function getCurrentUser() {
-      try {
-        return JSON.parse(localStorage.getItem(STORAGE_SESSION_KEY) || "null");
-      } catch {
-        return null;
-      }
-    }
-
-    function applyScreenState() {
-      const user = getCurrentUser();
-      const onboarding = document.getElementById("onboarding-screen");
-
-      if (user && user.otpVerified) {
-        document.body.classList.add("authenticated");
-        onboarding.style.display = "none";
-        document.getElementById("header-avatar").textContent = (user.name || user.email)[0].toUpperCase();
-        document.getElementById("header-username").textContent = user.name || user.email.split("@")[0];
-      } else {
-        document.body.classList.remove("authenticated");
-        document.body.classList.remove("stage-fullscreen");
-        onboarding.style.display = "flex";
-        backToStepOne();
-        switchAuthMode("signup");
-      }
-    }
-
-    function switchAuthMode(mode) {
-      authMode = mode;
-      const isSignup = mode === "signup";
-      document.getElementById("tab-signup").classList.toggle("active", isSignup);
-      document.getElementById("tab-login").classList.toggle("active", !isSignup);
-      document.getElementById("name-field-group").style.display = isSignup ? "block" : "none";
-      document.getElementById("auth-name").required = isSignup;
-      document.getElementById("auth-title").textContent = isSignup ? "Create Your Account" : "Sign In to TinyMinyCreative";
-      document.getElementById("auth-subtitle").textContent = isSignup
-        ? "We'll send a 6-digit OTP code to your email for second-step verification."
-        : "Sign in and verify your 6-digit OTP code to access your apps.";
-      document.getElementById("auth-submit-btn").textContent = "Send OTP & Continue →";
-      document.getElementById("auth-error").style.display = "none";
-    }
-
-    function showAuthError(msg) {
-      const errBox = document.getElementById("auth-error");
-      errBox.textContent = msg;
-      errBox.style.display = "block";
-    }
-
-    function showOtpError(msg) {
-      const errBox = document.getElementById("otp-error");
-      errBox.textContent = msg;
-      errBox.style.display = "block";
-    }
-
-    function generateSixDigitOtp() {
-      const num = Math.floor(100000 + Math.random() * 900000);
-      return String(num);
-    }
-
-    async function dispatchOtp(email, name, otpCode, purpose = "verification") {
-      if (OTP_WEBHOOK_CONFIG.enabled && OTP_WEBHOOK_CONFIG.endpoint) {
-        try {
-          await fetch(OTP_WEBHOOK_CONFIG.endpoint, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(OTP_WEBHOOK_CONFIG.buildPayload(email, name, otpCode, purpose))
-          });
-        } catch {
-          // Fallback to local sandbox OTP display if webhook is unreachable
-        }
-      }
-    }
-
-    function startResendCooldown(seconds = 60) {
-      clearInterval(resendInterval);
-      let remaining = seconds;
-      const btn = document.getElementById("resend-otp-btn");
-      const timerSpan = document.getElementById("otp-timer");
-      btn.disabled = true;
-      btn.innerHTML = `Resend OTP (<span id="otp-timer">${remaining}</span>s)`;
-
-      resendInterval = setInterval(() => {
-        remaining -= 1;
-        if (remaining <= 0) {
-          clearInterval(resendInterval);
-          btn.disabled = false;
-          btn.innerHTML = "Resend OTP";
-        } else {
-          const currentTimer = document.getElementById("otp-timer");
-          if (currentTimer) currentTimer.textContent = remaining;
-        }
-      }, 1000);
-    }
-
-    async function sendOtpForPendingUser() {
-      if (!pendingAuthPayload) return;
-      activeOtpCode = generateSixDigitOtp();
-      otpExpiresAt = Date.now() + 5 * 60 * 1000; // 5-minute validity
-
-      document.getElementById("otp-target-email").textContent = pendingAuthPayload.email;
-      document.getElementById("sandbox-otp-display").textContent = activeOtpCode;
-      document.getElementById("otp-input").value = "";
-      document.getElementById("otp-error").style.display = "none";
-
-      await dispatchOtp(pendingAuthPayload.email, pendingAuthPayload.name, activeOtpCode, "signin");
-      startResendCooldown(60);
-      showToast(`6-digit OTP sent to ${pendingAuthPayload.email}`);
-    }
-
-    async function handleCredentialsSubmit(e) {
-      e.preventDefault();
-      const name = document.getElementById("auth-name").value.trim();
-      const email = document.getElementById("auth-email").value.trim().toLowerCase();
-      const password = document.getElementById("auth-password").value;
-      const users = getUsers();
-
-      if (authMode === "signup") {
-        if (!name) return showAuthError("Please enter your creator display name.");
-        if (users.some(u => u.email === email)) {
-          return showAuthError("An account with this email already exists. Switch to Sign In.");
-        }
-        pendingAuthPayload = {
-          mode: "signup",
-          name,
-          email,
-          password,
-          joined: new Date().toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })
-        };
-      } else {
-        const matched = users.find(u => u.email === email && u.password === password);
-        if (!matched) {
-          return showAuthError("Invalid email or password. Need an account? Switch to Create Account.");
-        }
-        pendingAuthPayload = {
-          mode: "login",
-          name: matched.name,
-          email: matched.email,
-          password: matched.password,
-          joined: matched.joined
-        };
-      }
-
-      document.getElementById("auth-error").style.display = "none";
-      document.getElementById("step-credentials-pane").style.display = "none";
-      document.getElementById("step-otp-pane").style.display = "block";
-      await sendOtpForPendingUser();
-      document.getElementById("otp-input").focus();
-    }
-
-    async function resendOtp() {
-      await sendOtpForPendingUser();
-    }
-
-    function backToStepOne() {
-      clearInterval(resendInterval);
-      activeOtpCode = null;
-      document.getElementById("step-otp-pane").style.display = "none";
-      document.getElementById("step-credentials-pane").style.display = "block";
-      document.getElementById("otp-error").style.display = "none";
-    }
-
-    function handleOtpVerify(e) {
-      e.preventDefault();
-      if (!pendingAuthPayload || !activeOtpCode) return;
-
-      if (Date.now() > otpExpiresAt) {
-        return showOtpError("This OTP has expired. Click Resend OTP to get a new code.");
-      }
-
-      const entered = document.getElementById("otp-input").value.trim();
-      if (entered !== activeOtpCode) {
-        return showOtpError("Invalid 6-digit OTP code. Please check and try again.");
-      }
-
-      const users = getUsers();
-      if (pendingAuthPayload.mode === "signup") {
-        users.push({
-          name: pendingAuthPayload.name,
-          email: pendingAuthPayload.email,
-          password: pendingAuthPayload.password,
-          joined: pendingAuthPayload.joined
+        DEFAULT_APPS.forEach(app => {
+          if (!mergedLinks[app.id] || mergedLinks[app.id] === LEGACY_GITHUB_URLS[app.id]) {
+            mergedLinks[app.id] = app.githubUrl;
+          }
         });
-        saveUsers(users);
-      }
 
-      localStorage.setItem(STORAGE_SESSION_KEY, JSON.stringify({
-        name: pendingAuthPayload.name,
-        email: pendingAuthPayload.email,
-        joined: pendingAuthPayload.joined,
-        otpVerified: true
-      }));
-
-      clearInterval(resendInterval);
-      const verifiedName = pendingAuthPayload.name;
-      pendingAuthPayload = null;
-      activeOtpCode = null;
-      document.getElementById("auth-form").reset();
-      document.getElementById("otp-form").reset();
-
-      applyScreenState();
-      showHome();
-      showToast(`OTP verified! Welcome to TinyMinyCreative, ${verifiedName}.`);
-    }
-
-    function openProfileModal() {
-      const user = getCurrentUser();
-      if (!user) return;
-      cancelDeleteConfirmation();
-      document.getElementById("profile-avatar-lg").textContent = (user.name || user.email)[0].toUpperCase();
-      document.getElementById("profile-name").textContent = user.name;
-      document.getElementById("profile-email").textContent = user.email;
-      document.getElementById("profile-joined").textContent = `Joined ${user.joined || "TinyMinyCreative"} • OTP Verified`;
-      document.getElementById("profile-modal").classList.add("open");
-    }
-
-    function closeProfileModal() {
-      cancelDeleteConfirmation();
-      document.getElementById("profile-modal").classList.remove("open");
-    }
-
-    function startDeleteResendCooldown(seconds = 60) {
-      clearInterval(deleteResendInterval);
-      let remaining = seconds;
-      const btn = document.getElementById("delete-resend-btn");
-      btn.disabled = true;
-      btn.innerHTML = `Resend OTP (<span id="delete-otp-timer">${remaining}</span>s)`;
-
-      deleteResendInterval = setInterval(() => {
-        remaining -= 1;
-        if (remaining <= 0) {
-          clearInterval(deleteResendInterval);
-          btn.disabled = false;
-          btn.innerHTML = "Resend OTP";
-        } else {
-          const timerEl = document.getElementById("delete-otp-timer");
-          if (timerEl) timerEl.textContent = remaining;
+        const accounts = Array.isArray(parsed.accounts) ? parsed.accounts : [];
+        if (parsed.verifiedUser && accounts.length === 0) {
+          accounts.push({
+            name: parsed.verifiedUser.name,
+            handle: parsed.verifiedUser.handle || 'creator',
+            email: parsed.verifiedUser.email,
+            avatarColor: parsed.verifiedUser.avatarColor || 'indigo',
+            orgTier: parsed.verifiedUser.orgTier || 'Personal',
+            ageTier: parsed.verifiedUser.ageTier || 'Adult',
+            orgName: '',
+            teamSize: '',
+            parentEmail: '',
+            passwordHash: '',
+            secQuestion: 'What was your first creative project?',
+            secAnswer: '',
+            primaryApp: 'EasyLearn',
+            verifiedAt: parsed.verifiedUser.verifiedAt || new Date().toISOString()
+          });
         }
-      }, 1000);
-    }
 
-    async function sendDeleteOtp() {
-      const user = getCurrentUser();
-      if (!user) return;
-      deleteOtpCode = generateSixDigitOtp();
-      deleteOtpExpiresAt = Date.now() + 5 * 60 * 1000;
-
-      document.getElementById("delete-otp-email").textContent = user.email;
-      document.getElementById("delete-sandbox-otp").textContent = deleteOtpCode;
-      document.getElementById("delete-otp-input").value = "";
-      document.getElementById("delete-error").style.display = "none";
-
-      await dispatchOtp(user.email, user.name, deleteOtpCode, "account_deletion");
-      startDeleteResendCooldown(60);
-      showToast(`Deletion OTP sent to ${user.email}`);
-    }
-
-    async function startDeleteOtpFlow() {
-      document.getElementById("delete-step-initial").style.display = "none";
-      document.getElementById("delete-step-confirm").style.display = "flex";
-      await sendDeleteOtp();
-      document.getElementById("delete-otp-input").focus();
-    }
-
-    async function resendDeleteOtp() {
-      await sendDeleteOtp();
-    }
-
-    function cancelDeleteConfirmation() {
-      clearInterval(deleteResendInterval);
-      deleteOtpCode = null;
-      document.getElementById("delete-step-confirm").style.display = "none";
-      document.getElementById("delete-step-initial").style.display = "block";
-      document.getElementById("delete-error").style.display = "none";
-      document.getElementById("delete-otp-input").value = "";
-    }
-
-    function deleteAccountWithOtp() {
-      const errBox = document.getElementById("delete-error");
-      if (!deleteOtpCode) {
-        errBox.textContent = "Please request a 6-digit OTP first.";
-        errBox.style.display = "block";
-        return;
+        return {
+          ...fallback,
+          ...parsed,
+          accounts,
+          activeEmail: parsed.activeEmail || (parsed.verifiedUser ? parsed.verifiedUser.email : null),
+          githubLinks: mergedLinks,
+          projects: Array.isArray(parsed.projects) ? parsed.projects : fallback.projects
+        };
+      } catch (err) {
+        return getDefaultState();
       }
-
-      if (Date.now() > deleteOtpExpiresAt) {
-        errBox.textContent = "Deletion OTP expired. Click Resend OTP for a new code.";
-        errBox.style.display = "block";
-        return;
-      }
-
-      const enteredOtp = document.getElementById("delete-otp-input").value.trim();
-      if (enteredOtp !== deleteOtpCode) {
-        errBox.textContent = "Incorrect 6-digit OTP. Account was not deleted.";
-        errBox.style.display = "block";
-        return;
-      }
-
-      const currentUser = getCurrentUser();
-      if (!currentUser) return;
-
-      const targetEmail = (currentUser.email || "").toLowerCase();
-      const remainingUsers = getUsers().filter(u => (u.email || "").toLowerCase() !== targetEmail);
-      saveUsers(remainingUsers);
-      localStorage.removeItem(STORAGE_SESSION_KEY);
-      activeAppId = null;
-
-      closeProfileModal();
-      applyScreenState();
-      showToast(`OTP verified — account (${currentUser.email}) deleted.`);
     }
 
-    function logoutUser() {
-      localStorage.removeItem(STORAGE_SESSION_KEY);
-      activeAppId = null;
-      closeProfileModal();
-      applyScreenState();
-      showToast("Signed out. Complete account + OTP verification to re-enter.");
-    }
-
-    /* ---------- Downloads & App Cards ---------- */
-    async function triggerAppDownload(id) {
-      const app = appMap[id];
-      if (!app) return;
-
-      const encodedPath = encodeURI(app.file);
-      showToast(`Preparing download for ${app.name}...`);
-
+    function saveState() {
       try {
-        const response = await fetch(encodedPath);
-        if (!response.ok) throw new Error("Fetch fallback");
-        const blob = await response.blob();
-        const blobUrl = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = blobUrl;
-        link.download = app.file;
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-        setTimeout(() => URL.revokeObjectURL(blobUrl), 2000);
-        showToast(`Downloaded ${app.file}`);
-      } catch {
-        const link = document.createElement("a");
-        link.href = encodedPath;
-        link.download = app.file;
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-        showToast(`Download triggered for ${app.file}`);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (err) {
+        showToast('Could not save state locally.');
       }
     }
 
-    function downloadActiveApp() {
-      if (activeAppId) triggerAppDownload(activeAppId);
+    function getActiveUser() {
+      if (!state.activeEmail) return null;
+      return state.accounts.find(acc => acc.email.toLowerCase() === state.activeEmail.toLowerCase()) || null;
     }
 
-    function escapeHtml(str) {
-      return String(str).replace(/[&<>"']/g, s => ({
-        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
-      }[s]));
+    function showToast(message) {
+      const banner = document.getElementById('toast-banner');
+      banner.textContent = message;
+      banner.classList.remove('opacity-0', 'translate-y-3', 'pointer-events-none');
+      banner.classList.add('opacity-100', 'translate-y-0');
+      clearTimeout(showToast._timer);
+      showToast._timer = setTimeout(() => {
+        banner.classList.add('opacity-0', 'translate-y-3', 'pointer-events-none');
+        banner.classList.remove('opacity-100', 'translate-y-0');
+      }, 3000);
     }
 
-    function renderCards(filterText = "") {
-      const query = filterText.trim().toLowerCase();
-      const filtered = APPS.filter(app =>
-        !query ||
-        app.name.toLowerCase().includes(query) ||
-        app.category.toLowerCase().includes(query) ||
-        app.description.toLowerCase().includes(query) ||
-        app.tags.some(t => t.toLowerCase().includes(query))
-      );
+    function encodeCredential(str) {
+      return btoa(unescape(encodeURIComponent(String(str))));
+    }
 
-      const grid = document.getElementById("app-grid");
-      if (filtered.length === 0) {
-        grid.innerHTML = `
-          <div style="grid-column: 1 / -1; text-align: center; padding: 48px 20px; color: var(--text-muted); background: var(--glass); border: 1px solid var(--border); border-radius: var(--radius-xl);">
-            No matching apps found in TinyMinyCreative for "<strong>${escapeHtml(filterText)}</strong>".
-          </div>
-        `;
-        return;
+    function getAvatarBgClass(color) {
+      if (color === 'blue') return 'bg-blue-600';
+      if (color === 'emerald') return 'bg-emerald-500 text-slate-950';
+      if (color === 'amber') return 'bg-amber-500 text-slate-950';
+      return 'bg-indigo-600';
+    }
+
+    /* ===================================================================== */
+    /* AUTH MODE SWITCHER & 4-STEP ACCOUNT CREATION WIZARD                   */
+    /* ===================================================================== */
+    function switchAuthMode(mode) {
+      const regTab = document.getElementById('auth-tab-register');
+      const signTab = document.getElementById('auth-tab-signin');
+      const regPanel = document.getElementById('auth-panel-register');
+      const signPanel = document.getElementById('auth-panel-signin');
+
+      if (mode === 'register') {
+        regTab.className = 'rounded-lg bg-indigo-600 text-white py-2 text-xs sm:text-sm font-bold shadow transition';
+        signTab.className = 'rounded-lg text-slate-400 hover:text-white py-2 text-xs sm:text-sm font-semibold transition';
+        regPanel.classList.remove('hidden');
+        signPanel.classList.add('hidden');
+        document.getElementById('auth-gate-title').textContent = 'Create Your Studio Account';
+        document.getElementById('auth-gate-subtitle').textContent = 'Complete the 4-step studio onboarding and 6-digit email OTP verification to unlock Blender Lite, EasyLearn, EasyliyEdit, and PixelForge.';
+      } else {
+        signTab.className = 'rounded-lg bg-indigo-600 text-white py-2 text-xs sm:text-sm font-bold shadow transition';
+        regTab.className = 'rounded-lg text-slate-400 hover:text-white py-2 text-xs sm:text-sm font-semibold transition';
+        signPanel.classList.remove('hidden');
+        regPanel.classList.add('hidden');
+        document.getElementById('auth-gate-title').textContent = 'Sign In to TinyMinyCreative';
+        document.getElementById('auth-gate-subtitle').textContent = 'Sign in with your verified Studio Email or @Handle to unlock the app launcher.';
+        renderSavedAccountsQuickList();
       }
-
-      grid.innerHTML = filtered.map(app => `
-        <article
-          class="card"
-          style="--card-gradient: ${app.gradient}; --card-glow: ${app.glow}; --card-border: ${app.border}; --card-shadow: ${app.shadow};"
-          onmousemove="handleCardSpotlight(event, this)"
-        >
-          <div class="card-accent-strip"></div>
-          <div>
-            <div class="card-header">
-              <div class="icon-wrap" aria-hidden="true">${app.icon}</div>
-              <div class="meta-badges">
-                <span class="category-pill">${app.category}</span>
-                <span class="file-tag">${app.file}</span>
-              </div>
-            </div>
-
-            <div class="card-body" style="margin-top: 18px;">
-              <h2>
-                <span>${app.name}</span>
-                <span class="shortcut-hint" title="Press ${app.key} to launch">Key ${app.key}</span>
-              </h2>
-              <p>${app.description}</p>
-              <div class="feature-tags">
-                ${app.tags.map(tag => `<span class="feature-tag">${tag}</span>`).join("")}
-              </div>
-            </div>
-          </div>
-
-          <div class="card-actions">
-            <button class="launch-btn" onclick="openApp('${app.id}')">
-              <span>Launch App</span>
-              <span>→</span>
-            </button>
-            <button class="action-square-btn" onclick="triggerAppDownload('${app.id}')" title="Download ${app.file}">
-              <span>⬇</span>
-            </button>
-            <a class="action-square-btn" href="${encodeURI(app.file)}" target="_blank" rel="noopener" title="Open ${app.name} in a new browser tab">↗</a>
-          </div>
-        </article>
-      `).join("");
     }
 
-    function handleCardSpotlight(e, card) {
-      const rect = card.getBoundingClientRect();
-      card.style.setProperty("--mouse-x", `${e.clientX - rect.left}px`);
-      card.style.setProperty("--mouse-y", `${e.clientY - rect.top}px`);
+    function selectAvatarColor(color) {
+      selectedAvatarColor = color;
+      syncIdentityPreview();
     }
 
-    function setActiveTab(target) {
-      document.querySelectorAll(".nav-btn").forEach(btn => {
-        const isHome = target === "home" && btn.dataset.view === "home";
-        const isApp = btn.dataset.app === target;
-        btn.classList.toggle("active", isHome || isApp);
+    function syncIdentityPreview() {
+      const nameVal = document.getElementById('reg-name').value.trim();
+      const handleVal = document.getElementById('reg-handle').value.trim();
+      const initials = (nameVal || 'TM')
+        .split(/\s+/)
+        .map(part => part[0])
+        .join('')
+        .slice(0, 2)
+        .toUpperCase() || 'TM';
+
+      const avatar = document.getElementById('avatar-preview-circle');
+      avatar.className = `h-12 w-12 shrink-0 rounded-full ${getAvatarBgClass(selectedAvatarColor)} flex items-center justify-center text-sm font-extrabold text-white shadow`;
+      avatar.textContent = initials;
+      document.getElementById('preview-identity-name').textContent = nameVal || 'Your Studio Identity';
+      document.getElementById('preview-identity-handle').textContent = handleVal ? `@${handleVal}` : '@creator';
+    }
+
+    function normalizeAndCheckHandle() {
+      const input = document.getElementById('reg-handle');
+      const cleaned = input.value.toLowerCase().replace(/[^a-z0-9_]/g, '').slice(0, 20);
+      input.value = cleaned;
+
+      const badge = document.getElementById('handle-status-badge');
+      if (cleaned.length < 3) {
+        badge.textContent = 'min 3 chars';
+        badge.className = 'text-[11px] font-mono text-slate-400';
+      } else if (state.accounts.some(acc => acc.handle.toLowerCase() === cleaned)) {
+        badge.textContent = 'handle taken';
+        badge.className = 'text-[11px] font-mono text-rose-400';
+      } else {
+        badge.textContent = 'available';
+        badge.className = 'text-[11px] font-mono text-emerald-400';
+      }
+      syncIdentityPreview();
+    }
+
+    function syncTierFields() {
+      const orgTier = document.getElementById('reg-org-tier').value;
+      const ageTier = document.getElementById('reg-age-tier').value;
+
+      const bizFields = document.getElementById('business-extra-fields');
+      const childFields = document.getElementById('child-extra-fields');
+
+      if (orgTier === 'Business') bizFields.classList.remove('hidden');
+      else bizFields.classList.add('hidden');
+
+      if (ageTier === 'Child') childFields.classList.remove('hidden');
+      else childFields.classList.add('hidden');
+
+      const minLen = orgTier === 'Business' ? 12 : 10;
+      const summary = document.getElementById('role-tier-summary');
+      summary.textContent = `${orgTier} + ${ageTier} selected: Requires at least ${minLen} characters for your password${ageTier === 'Child' ? ' plus verified parent/guardian consent' : ''}.`;
+      evaluatePasswordChecklist();
+    }
+
+    function toggleRegPasswordVisibility() {
+      const pwd = document.getElementById('reg-password');
+      const confirmPwd = document.getElementById('reg-password-confirm');
+      const nextType = pwd.type === 'password' ? 'text' : 'password';
+      pwd.type = nextType;
+      confirmPwd.type = nextType;
+    }
+
+    function evaluatePasswordChecklist() {
+      const pwd = document.getElementById('reg-password').value || '';
+      const confirmPwd = document.getElementById('reg-password-confirm').value || '';
+      const orgTier = document.getElementById('reg-org-tier').value;
+      const minLen = orgTier === 'Business' ? 12 : 10;
+
+      const hasLen = pwd.length >= minLen;
+      const hasCase = /[A-Z]/.test(pwd) && /[a-z]/.test(pwd);
+      const hasNum = /[0-9]/.test(pwd);
+      const hasSym = /[^A-Za-z0-9]/.test(pwd);
+      const matches = pwd.length > 0 && pwd === confirmPwd;
+
+      updateChecklistRow('chk-length', hasLen, `Minimum ${minLen} characters (${orgTier})`);
+      updateChecklistRow('chk-case', hasCase, 'Uppercase & lowercase letters');
+      updateChecklistRow('chk-number', hasNum, 'At least 1 number (0–9)');
+      updateChecklistRow('chk-special', hasSym, 'At least 1 symbol (!@#$...)');
+      updateChecklistRow('chk-match', matches, 'Passwords match');
+
+      const allPassed = hasLen && hasCase && hasNum && hasSym && matches;
+      const pill = document.getElementById('pwd-strength-pill');
+      if (allPassed) {
+        pill.textContent = 'Ready & Strong';
+        pill.className = 'font-mono text-emerald-400 font-bold';
+      } else {
+        pill.textContent = 'Incomplete';
+        pill.className = 'font-mono text-rose-400';
+      }
+      return allPassed;
+    }
+
+    function updateChecklistRow(id, ok, text) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = `${ok ? '✓' : '○'} ${text}`;
+      el.className = ok ? 'text-emerald-400 font-medium' : 'text-slate-400';
+    }
+
+    function goToWizardStep(stepNum) {
+      wizardStep = stepNum;
+      document.querySelectorAll('.wizard-step').forEach(el => el.classList.add('hidden'));
+      document.getElementById(`wizard-step-${stepNum}`).classList.remove('hidden');
+
+      const progressPct = stepNum * 25;
+      document.getElementById('wizard-progress-bar').style.width = `${progressPct}%`;
+
+      for (let i = 1; i <= 4; i++) {
+        const pill = document.getElementById(`step-pill-${i}`);
+        if (!pill) continue;
+        if (i < stepNum) {
+          pill.className = 'rounded-xl border border-emerald-500/40 bg-emerald-500/10 px-2 py-2';
+          pill.children[0].className = 'text-[10px] font-mono uppercase text-emerald-300';
+          pill.children[1].className = 'text-xs font-bold text-emerald-200 truncate';
+        } else if (i === stepNum) {
+          pill.className = 'rounded-xl border border-indigo-500 bg-indigo-500/15 px-2 py-2';
+          pill.children[0].className = 'text-[10px] font-mono uppercase text-indigo-300';
+          pill.children[1].className = 'text-xs font-bold text-white truncate';
+        } else {
+          pill.className = 'rounded-xl border border-slate-800 bg-slate-950/70 px-2 py-2';
+          pill.children[0].className = 'text-[10px] font-mono uppercase text-slate-500';
+          pill.children[1].className = 'text-xs font-semibold text-slate-400 truncate';
+        }
+      }
+    }
+
+    function advanceWizardStep(targetStep) {
+      if (targetStep === 2) {
+        const name = document.getElementById('reg-name').value.trim();
+        const handle = document.getElementById('reg-handle').value.trim();
+        const email = document.getElementById('reg-email').value.trim();
+        const err = document.getElementById('step-1-error');
+
+        if (!name || name.length < 2) {
+          err.textContent = 'Please enter your full display name (at least 2 characters).';
+          err.classList.remove('hidden');
+          return;
+        }
+        if (!handle || handle.length < 3) {
+          err.textContent = 'Please choose a unique @StudioHandle with at least 3 characters.';
+          err.classList.remove('hidden');
+          return;
+        }
+        if (state.accounts.some(acc => acc.handle.toLowerCase() === handle.toLowerCase())) {
+          err.textContent = `The handle @${handle} is already registered. Please choose another.`;
+          err.classList.remove('hidden');
+          return;
+        }
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          err.textContent = 'Please enter a valid email address for OTP verification.';
+          err.classList.remove('hidden');
+          return;
+        }
+        if (state.accounts.some(acc => acc.email.toLowerCase() === email.toLowerCase())) {
+          err.textContent = 'An account with this email already exists. Switch to Sign In above.';
+          err.classList.remove('hidden');
+          return;
+        }
+        err.classList.add('hidden');
+        syncTierFields();
+        goToWizardStep(2);
+      } else if (targetStep === 3) {
+        const orgTier = document.getElementById('reg-org-tier').value;
+        const ageTier = document.getElementById('reg-age-tier').value;
+        const orgName = document.getElementById('reg-org-name').value.trim();
+        const parentEmail = document.getElementById('reg-parent-email').value.trim();
+        const parentConsent = document.getElementById('reg-parent-consent').checked;
+        const err = document.getElementById('step-2-error');
+
+        if (orgTier === 'Business' && !orgName) {
+          err.textContent = 'Please enter your Organization or School Name for Business Team accounts.';
+          err.classList.remove('hidden');
+          return;
+        }
+        if (ageTier === 'Child') {
+          if (!parentEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(parentEmail)) {
+            err.textContent = 'Please enter a valid Parent or Guardian email address for Child mode.';
+            err.classList.remove('hidden');
+            return;
+          }
+          if (!parentConsent) {
+            err.textContent = 'Please check the parent/guardian approval confirmation box.';
+            err.classList.remove('hidden');
+            return;
+          }
+        }
+        err.classList.add('hidden');
+        evaluatePasswordChecklist();
+        goToWizardStep(3);
+      } else if (targetStep === 4) {
+        const pwdValid = evaluatePasswordChecklist();
+        const secAnswer = document.getElementById('reg-sec-answer').value.trim();
+        const termsAgree = document.getElementById('reg-terms-agree').checked;
+        const err = document.getElementById('step-3-error');
+
+        if (!pwdValid) {
+          err.textContent = 'Please satisfy every requirement in the Password Policy Checklist before continuing.';
+          err.classList.remove('hidden');
+          return;
+        }
+        if (!secAnswer || secAnswer.length < 2) {
+          err.textContent = 'Please enter an answer to your security recovery question.';
+          err.classList.remove('hidden');
+          return;
+        }
+        if (!termsAgree) {
+          err.textContent = 'Please agree to the TinyMinyCreative Studio Terms to continue.';
+          err.classList.remove('hidden');
+          return;
+        }
+
+        err.classList.add('hidden');
+        pendingRegistration = {
+          name: document.getElementById('reg-name').value.trim(),
+          handle: document.getElementById('reg-handle').value.trim(),
+          email: document.getElementById('reg-email').value.trim(),
+          avatarColor: selectedAvatarColor,
+          orgTier: document.getElementById('reg-org-tier').value,
+          ageTier: document.getElementById('reg-age-tier').value,
+          orgName: document.getElementById('reg-org-name').value.trim(),
+          teamSize: document.getElementById('reg-team-size').value,
+          parentEmail: document.getElementById('reg-parent-email').value.trim(),
+          passwordHash: encodeCredential(document.getElementById('reg-password').value),
+          secQuestion: document.getElementById('reg-sec-question').value,
+          secAnswer: secAnswer.toLowerCase(),
+          primaryApp: document.getElementById('reg-primary-app').value
+        };
+
+        regenerateRegistrationOtp(true);
+        goToWizardStep(4);
+      }
+    }
+
+    function regenerateRegistrationOtp(silent) {
+      if (!pendingRegistration) return;
+      pendingOtp = String(Math.floor(100000 + Math.random() * 900000));
+      document.getElementById('otp-target-email').textContent = pendingRegistration.email;
+      document.getElementById('generated-otp-display').textContent = pendingOtp;
+      document.getElementById('step-4-error').classList.add('hidden');
+      clearOtpBoxes();
+      if (!silent) {
+        showToast(`New 6-digit OTP dispatched: ${pendingOtp}`);
+      }
+    }
+
+    function clearOtpBoxes() {
+      const boxes = document.querySelectorAll('.otp-digit');
+      boxes.forEach(box => { box.value = ''; });
+      if (boxes[0]) boxes[0].focus();
+    }
+
+    function autofillOtpBoxes() {
+      if (!pendingOtp) return;
+      const boxes = document.querySelectorAll('.otp-digit');
+      pendingOtp.split('').forEach((digit, idx) => {
+        if (boxes[idx]) boxes[idx].value = digit;
       });
     }
 
-    function showHome() {
-      const user = getCurrentUser();
-      if (!user || !user.otpVerified) return applyScreenState();
-      activeAppId = null;
-      document.body.classList.remove("stage-fullscreen");
-      updateFullscreenButton();
-      setActiveTab("home");
-
-      document.getElementById("launcher-view").style.display = "block";
-      document.getElementById("stage-view").classList.remove("active");
-      document.getElementById("external-link").style.display = "none";
-      document.getElementById("reload-btn").style.display = "none";
-      document.getElementById("stage-download-btn").style.display = "none";
-
-      history.replaceState(null, "", "#home");
+    function getEnteredOtpCode() {
+      return Array.from(document.querySelectorAll('.otp-digit'))
+        .map(input => input.value.trim())
+        .join('');
     }
 
-    function openApp(id) {
-      const user = getCurrentUser();
-      if (!user || !user.otpVerified) return applyScreenState();
-      const app = appMap[id];
+    function setupOtpInputs() {
+      const boxes = Array.from(document.querySelectorAll('.otp-digit'));
+      boxes.forEach((box, idx) => {
+        box.addEventListener('input', () => {
+          box.value = box.value.replace(/\D/g, '').slice(0, 1);
+          if (box.value && idx < boxes.length - 1) {
+            boxes[idx + 1].focus();
+          }
+        });
+        box.addEventListener('keydown', (e) => {
+          if (e.key === 'Backspace' && !box.value && idx > 0) {
+            boxes[idx - 1].focus();
+          }
+        });
+        box.addEventListener('paste', (e) => {
+          e.preventDefault();
+          const pasted = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '').slice(0, 6);
+          pasted.split('').forEach((ch, i) => {
+            if (boxes[i]) boxes[i].value = ch;
+          });
+          const focusIdx = Math.min(pasted.length, boxes.length - 1);
+          if (boxes[focusIdx]) boxes[focusIdx].focus();
+        });
+      });
+    }
+
+    function completeOtpRegistration() {
+      const code = getEnteredOtpCode();
+      const err = document.getElementById('step-4-error');
+
+      if (!pendingRegistration || code !== pendingOtp) {
+        err.textContent = 'Invalid 6-digit verification code. Enter the 6 digits shown in the inbox card above.';
+        err.classList.remove('hidden');
+        return;
+      }
+
+      err.classList.add('hidden');
+      const newAccount = {
+        ...pendingRegistration,
+        verifiedAt: new Date().toISOString()
+      };
+
+      state.accounts.push(newAccount);
+      state.activeEmail = newAccount.email;
+      state.sessionUnlocked = true;
+      pendingRegistration = null;
+      pendingOtp = null;
+      saveState();
+
+      resetRegistrationInputs();
+      enterWorkspace();
+      showToast(`Welcome @${newAccount.handle}! Account verified & unlocked.`);
+    }
+
+    function resetRegistrationInputs() {
+      ['reg-name', 'reg-handle', 'reg-email', 'reg-org-name', 'reg-parent-email', 'reg-password', 'reg-password-confirm', 'reg-sec-answer'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+      });
+      document.getElementById('reg-parent-consent').checked = false;
+      document.getElementById('reg-terms-agree').checked = false;
+      clearOtpBoxes();
+      goToWizardStep(1);
+    }
+
+    /* ===================================================================== */
+    /* RETURNING USER SIGN-IN & PASSWORD RECOVERY                            */
+    /* ===================================================================== */
+    function renderSavedAccountsQuickList() {
+      const container = document.getElementById('saved-accounts-quicklist');
+      if (!container) return;
+
+      if (state.accounts.length === 0) {
+        container.innerHTML = '<div class="rounded-xl border border-slate-800 bg-slate-950/70 p-3.5 text-xs text-slate-400">No studio accounts created on this browser yet. Switch to <span class="font-bold text-indigo-300">Create Studio Account</span> to register.</div>';
+        return;
+      }
+
+      container.innerHTML = '<p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Registered Studio Accounts</p>' +
+        state.accounts.map(acc => `
+          <button type="button" onclick="prefillSignInAccount('${escapeAttr(acc.email)}')"
+            class="w-full flex items-center justify-between gap-2 rounded-xl border border-slate-800 bg-slate-950/80 hover:border-indigo-500/50 px-3.5 py-2.5 text-left transition">
+            <div>
+              <p class="text-xs font-bold text-white">${escapeHtml(acc.name)} <span class="font-mono text-indigo-300">@${escapeHtml(acc.handle)}</span></p>
+              <p class="text-[11px] text-slate-400">${escapeHtml(acc.email)} • ${escapeHtml(acc.orgTier)} • ${escapeHtml(acc.ageTier)}</p>
+            </div>
+            <span class="text-[11px] font-semibold text-indigo-300">Select &rarr;</span>
+          </button>
+        `).join('');
+    }
+
+    function prefillSignInAccount(email) {
+      document.getElementById('signin-identifier').value = email;
+      document.getElementById('signin-password').focus();
+    }
+
+    function handleSignInSubmit(event) {
+      event.preventDefault();
+      const idVal = document.getElementById('signin-identifier').value.trim().toLowerCase().replace(/^@/, '');
+      const pwdVal = document.getElementById('signin-password').value;
+      const err = document.getElementById('signin-error');
+
+      const matched = state.accounts.find(acc =>
+        acc.email.toLowerCase() === idVal || acc.handle.toLowerCase() === idVal
+      );
+
+      if (!matched) {
+        err.textContent = 'No registered studio account matches that email or @handle.';
+        err.classList.remove('hidden');
+        return;
+      }
+
+      if (matched.passwordHash && matched.passwordHash !== encodeCredential(pwdVal)) {
+        err.textContent = 'Incorrect password. Use Forgot Password below if you need to reset it.';
+        err.classList.remove('hidden');
+        return;
+      }
+
+      err.classList.add('hidden');
+      state.activeEmail = matched.email;
+      state.sessionUnlocked = true;
+      saveState();
+      document.getElementById('signin-password').value = '';
+      enterWorkspace();
+      showToast(`Signed in as @${matched.handle}.`);
+    }
+
+    function toggleForgotPasswordBox() {
+      document.getElementById('forgot-password-box').classList.toggle('hidden');
+    }
+
+    function handlePasswordReset() {
+      const email = document.getElementById('recover-email').value.trim().toLowerCase();
+      const answer = document.getElementById('recover-answer').value.trim().toLowerCase();
+      const newPwd = document.getElementById('recover-new-password').value;
+      const feedback = document.getElementById('recover-feedback');
+
+      const matched = state.accounts.find(acc => acc.email.toLowerCase() === email);
+      feedback.classList.remove('hidden');
+
+      if (!matched) {
+        feedback.textContent = 'No account found with that email address.';
+        return;
+      }
+      if (!matched.secAnswer || matched.secAnswer !== answer) {
+        feedback.textContent = 'Security question answer did not match.';
+        return;
+      }
+      const minLen = matched.orgTier === 'Business' ? 12 : 10;
+      if (newPwd.length < minLen) {
+        feedback.textContent = `New password must be at least ${minLen} characters (${matched.orgTier} tier).`;
+        return;
+      }
+
+      matched.passwordHash = encodeCredential(newPwd);
+      state.activeEmail = matched.email;
+      state.sessionUnlocked = true;
+      saveState();
+      feedback.textContent = 'Password updated! Entering workspace...';
+      enterWorkspace();
+      showToast('Password reset & signed in.');
+    }
+
+    function lockSession() {
+      state.sessionUnlocked = false;
+      saveState();
+      syncGateVisibility();
+      switchAuthMode('signin');
+      showToast('Workspace locked. Sign in or create another account.');
+    }
+
+    function syncGateVisibility() {
+      const gate = document.getElementById('auth-gate');
+      const workspace = document.getElementById('main-workspace');
+      const activeUser = getActiveUser();
+      const isAuthorized = Boolean(activeUser && state.sessionUnlocked);
+
+      document.getElementById('saved-accounts-count').textContent = String(state.accounts.length);
+
+      if (isAuthorized) {
+        gate.classList.add('hidden');
+        workspace.classList.remove('hidden');
+      } else {
+        workspace.classList.add('hidden');
+        gate.classList.remove('hidden');
+        syncTierFields();
+      }
+    }
+
+    function enterWorkspace() {
+      syncGateVisibility();
+      const user = getActiveUser();
+      if (!user) return;
+
+      const initials = user.name
+        .split(/\s+/)
+        .map(part => part[0])
+        .join('')
+        .slice(0, 2)
+        .toUpperCase() || 'TM';
+
+      document.getElementById('header-user-name').textContent = user.name;
+      document.getElementById('header-user-badges').textContent = `@${user.handle} • ${user.orgTier} • ${user.ageTier}`;
+      document.getElementById('launcher-mode-pill').textContent = `${user.orgTier} Workspace • ${user.ageTier} Mode`;
+
+      const profileInit = document.getElementById('profile-initials');
+      profileInit.className = `h-14 w-14 rounded-full ${getAvatarBgClass(user.avatarColor)} flex items-center justify-center text-lg font-extrabold text-white`;
+      profileInit.textContent = initials;
+
+      document.getElementById('profile-display-name').textContent = user.name;
+      document.getElementById('profile-handle-badge').textContent = `@${user.handle}`;
+      document.getElementById('profile-display-email').textContent = user.email;
+      document.getElementById('profile-org-badge').textContent = user.orgTier;
+      document.getElementById('profile-age-badge').textContent = user.ageTier;
+
+      document.getElementById('edit-org-tier').value = user.orgTier;
+      document.getElementById('edit-age-tier').value = user.ageTier;
+
+      const detailsGrid = document.getElementById('profile-details-grid');
+      detailsGrid.innerHTML = `
+        <div class="rounded-xl border border-slate-800 bg-slate-950/70 p-3.5">
+          <p class="text-slate-400">Primary App Focus</p>
+          <p class="mt-1 font-bold text-white">${escapeHtml(user.primaryApp || 'EasyLearn')}</p>
+        </div>
+        <div class="rounded-xl border border-slate-800 bg-slate-950/70 p-3.5">
+          <p class="text-slate-400">${user.orgTier === 'Business' ? 'Organization / Team' : 'Workspace Scope'}</p>
+          <p class="mt-1 font-bold text-white">${escapeHtml(user.orgTier === 'Business' ? (user.orgName || 'Business Team') : 'Personal Creator Studio')}</p>
+        </div>
+        <div class="rounded-xl border border-slate-800 bg-slate-950/70 p-3.5">
+          <p class="text-slate-400">${user.ageTier === 'Child' ? 'Parent / Guardian Contact' : 'Security Recovery'}</p>
+          <p class="mt-1 font-bold text-white">${escapeHtml(user.ageTier === 'Child' ? (user.parentEmail || 'Verified Guardian') : 'Security Question Armed')}</p>
+        </div>
+      `;
+
+      applyEasyLearnPaletteUI();
+      renderAppsGrid();
+      renderProjectsList();
+      renderGitHubLinksForm();
+    }
+
+    /* ===================================================================== */
+    /* WORKSPACE NAVIGATION & EASYLEARN BLUE PALETTE ACCENT                 */
+    /* ===================================================================== */
+    function switchWorkspaceSection(sectionName) {
+      document.querySelectorAll('.workspace-section').forEach(sec => sec.classList.add('hidden'));
+      document.getElementById(`section-${sectionName}`).classList.remove('hidden');
+
+      document.querySelectorAll('.nav-tab').forEach(btn => {
+        btn.className = 'nav-tab rounded-xl px-3 py-2 text-xs sm:text-sm font-semibold text-slate-300 hover:bg-slate-800 hover:text-white transition';
+      });
+      const activeBtn = document.getElementById(`nav-${sectionName}`);
+      if (activeBtn) {
+        activeBtn.className = 'nav-tab rounded-xl px-3 py-2 text-xs sm:text-sm font-semibold bg-blue-600 text-white transition';
+      }
+    }
+
+    function setEasyLearnPalette(mode) {
+      state.easyLearnPalette = mode;
+      saveState();
+      applyEasyLearnPaletteUI();
+      renderAppsGrid();
+      showToast(`EasyLearn palette switched to ${mode === 'cobalt' ? 'Cobalt Blue' : 'Sky Study'}.`);
+    }
+
+    function applyEasyLearnPaletteUI() {
+      const cobaltBtn = document.getElementById('palette-cobalt-btn');
+      const skyBtn = document.getElementById('palette-sky-btn');
+      if (state.easyLearnPalette === 'cobalt') {
+        cobaltBtn.className = 'rounded-lg bg-blue-600 text-white px-3 py-1.5 text-xs font-bold shadow transition';
+        skyBtn.className = 'rounded-lg border border-slate-700 bg-slate-900 text-slate-300 hover:border-sky-400 px-3 py-1.5 text-xs font-semibold transition';
+      } else {
+        skyBtn.className = 'rounded-lg bg-sky-500 text-slate-950 px-3 py-1.5 text-xs font-bold shadow transition';
+        cobaltBtn.className = 'rounded-lg border border-slate-700 bg-slate-900 text-slate-300 hover:border-blue-400 px-3 py-1.5 text-xs font-semibold transition';
+      }
+    }
+
+    /* ===================================================================== */
+    /* APP LAUNCHER, DIRECT GITHUB DOWNLOAD & MODAL                          */
+    /* ===================================================================== */
+    function setCategoryFilter(category) {
+      activeCategory = category;
+      document.querySelectorAll('.cat-btn').forEach(btn => {
+        const isSelected = btn.dataset.cat === category;
+        btn.className = isSelected
+          ? 'cat-btn rounded-xl bg-blue-600 text-white px-3.5 py-2 text-xs font-bold transition'
+          : 'cat-btn rounded-xl border border-slate-800 bg-slate-900 text-slate-300 hover:border-slate-700 px-3.5 py-2 text-xs font-semibold transition';
+      });
+      renderAppsGrid();
+    }
+
+    function getAppDownloadUrl(appId) {
+      return state.githubLinks[appId] || DEFAULT_APPS.find(a => a.id === appId)?.githubUrl || 'https://github.com/TinyTactix/TinyMinyCreative';
+    }
+
+    function toRawGitHubUrl(url) {
+      return String(url || '').replace(
+        /^https:\/\/github\.com\/([^/]+)\/([^/]+)\/blob\/(.+)$/i,
+        'https://raw.githubusercontent.com/$1/$2/$3'
+      );
+    }
+
+    async function triggerDirectAppDownload(appId) {
+      const app = DEFAULT_APPS.find(item => item.id === appId);
       if (!app) return;
+      const githubUrl = getAppDownloadUrl(app.id);
+      const rawUrl = toRawGitHubUrl(githubUrl);
+      const downloadFilename = app.fileName || `${app.id}.html`;
 
-      activeAppId = id;
-      setActiveTab(id);
-
-      document.getElementById("launcher-view").style.display = "none";
-      document.getElementById("stage-view").classList.add("active");
-      document.getElementById("stage-icon").textContent = app.icon;
-      document.getElementById("stage-title").textContent = app.name;
-      document.getElementById("stage-file").textContent = app.file;
-
-      const frame = document.getElementById("app-frame");
-      const encodedSrc = encodeURI(app.file);
-      if (frame.getAttribute("src") !== encodedSrc) {
-        frame.setAttribute("src", encodedSrc);
+      showToast(`Fetching ${downloadFilename} from TinyTactix GitHub...`);
+      try {
+        const response = await fetch(rawUrl);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const htmlContent = await response.text();
+        const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+        const objectUrl = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = objectUrl;
+        link.download = downloadFilename;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(objectUrl);
+        showToast(`Downloaded ${downloadFilename}!`);
+      } catch (err) {
+        window.open(githubUrl, '_blank', 'noopener,noreferrer');
+        showToast(`Opened ${app.name} on GitHub for download.`);
       }
-
-      document.getElementById("external-link").style.display = "inline-flex";
-      document.getElementById("reload-btn").style.display = "inline-flex";
-      document.getElementById("stage-download-btn").style.display = "inline-flex";
-
-      history.replaceState(null, "", `#${id}`);
     }
 
-    function reloadFrame() {
-      if (!activeAppId) return;
-      const frame = document.getElementById("app-frame");
-      frame.contentWindow?.location.reload();
-    }
+    function renderAppsGrid() {
+      const query = (document.getElementById('app-search-input')?.value || '').trim().toLowerCase();
+      const grid = document.getElementById('apps-grid');
+      if (!grid) return;
 
-    function toggleFullscreen() {
-      document.body.classList.toggle("stage-fullscreen");
-      updateFullscreenButton();
-    }
+      const matches = DEFAULT_APPS.filter(app => {
+        const catOk = activeCategory === 'All' || app.category === activeCategory;
+        const text = `${app.name} ${app.fileName} ${app.category} ${app.description} ${app.highlights.join(' ')}`.toLowerCase();
+        const searchOk = !query || text.includes(query);
+        return catOk && searchOk;
+      });
 
-    function updateFullscreenButton() {
-      const isFs = document.body.classList.contains("stage-fullscreen");
-      document.getElementById("fs-icon").textContent = isFs ? "🗗" : "⛶";
-      document.getElementById("fs-label").textContent = isFs ? "Exit Expand" : "Expand";
-    }
-
-    let toastTimer = null;
-    function showToast(message) {
-      const toast = document.getElementById("toast");
-      document.getElementById("toast-msg").textContent = message;
-      toast.classList.add("show");
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => toast.classList.remove("show"), 3200);
-    }
-
-    // Live Search & Keyboard Shortcuts
-    const searchInput = document.getElementById("app-search");
-    searchInput.addEventListener("input", (e) => renderCards(e.target.value));
-
-    document.getElementById("profile-modal").addEventListener("click", (e) => {
-      if (e.target.id === "profile-modal") closeProfileModal();
-    });
-
-    document.addEventListener("keydown", (e) => {
-      const user = getCurrentUser();
-      if (!user || !user.otpVerified) return;
-      const tag = document.activeElement?.tagName;
-      const isTyping = tag === "INPUT" || tag === "TEXTAREA";
-      const modalOpen = document.getElementById("profile-modal").classList.contains("open");
-
-      if (e.key === "Escape") {
-        if (modalOpen) {
-          closeProfileModal();
-        } else if (document.body.classList.contains("stage-fullscreen")) {
-          toggleFullscreen();
-        } else if (activeAppId) {
-          showHome();
-        } else if (isTyping) {
-          searchInput.blur();
-        }
+      if (matches.length === 0) {
+        grid.innerHTML = '<div class="col-span-full rounded-2xl border border-slate-800 bg-slate-900/70 p-8 text-center text-sm text-slate-400">No apps match your current search or category filter.</div>';
         return;
       }
 
-      if (isTyping || modalOpen) return;
+      const isCobalt = state.easyLearnPalette === 'cobalt';
 
-      if (e.key === "/" && !activeAppId) {
-        e.preventDefault();
-        searchInput.focus();
+      grid.innerHTML = matches.map(app => {
+        const isEasyLearn = app.id === 'easylearn';
+        const cardClasses = isEasyLearn
+          ? (isCobalt
+              ? 'rounded-2xl border border-blue-500/50 bg-gradient-to-br from-slate-900 via-blue-950/55 to-slate-900 p-5 flex flex-col justify-between gap-4 shadow-lg shadow-blue-950/40'
+              : 'rounded-2xl border border-sky-400/50 bg-gradient-to-br from-slate-900 via-sky-950/45 to-slate-900 p-5 flex flex-col justify-between gap-4 shadow-lg shadow-sky-950/30')
+          : 'rounded-2xl border border-slate-800 bg-slate-900/90 hover:border-slate-700 p-5 flex flex-col justify-between gap-4 transition';
+
+        const badgeClasses = isEasyLearn
+          ? (isCobalt ? 'bg-blue-600 text-white' : 'bg-sky-400 text-slate-950')
+          : app.id === 'blender-lite'
+            ? 'bg-amber-500 text-slate-950'
+            : app.id === 'easyliyedit'
+              ? 'bg-indigo-600 text-white'
+              : 'bg-emerald-500 text-slate-950';
+
+        const launchBtnClasses = isEasyLearn
+          ? (isCobalt ? 'bg-blue-600 hover:bg-blue-500 text-white' : 'bg-sky-400 hover:bg-sky-300 text-slate-950')
+          : 'bg-indigo-600 hover:bg-indigo-500 text-white';
+
+        const downloadUrl = getAppDownloadUrl(app.id);
+        const bluePillHtml = isEasyLearn
+          ? '<span class="rounded-full bg-blue-500/20 border border-blue-400/40 px-2 py-0.5 text-[10px] font-bold text-blue-200">BLUE PALETTE</span>'
+          : '';
+
+        const tagsHtml = app.highlights
+          .map(tag => '<span class="rounded-lg border border-slate-700/80 bg-slate-950/70 px-2.5 py-1 text-[11px] font-medium text-slate-300">' + escapeHtml(tag) + '</span>')
+          .join('');
+
+        return `
+          <article class="${cardClasses}">
+            <div class="space-y-3">
+              <div class="flex items-start justify-between gap-3">
+                <div class="flex items-center gap-3">
+                  <div class="h-12 w-12 shrink-0 rounded-full ${badgeClasses} flex items-center justify-center font-extrabold text-sm shadow">
+                    ${app.shortCode}
+                  </div>
+                  <div>
+                    <div class="flex flex-wrap items-center gap-2">
+                      <h3 class="text-lg font-extrabold text-white">${escapeHtml(app.name)}</h3>
+                      ${bluePillHtml}
+                    </div>
+                    <p class="text-xs text-slate-400">${escapeHtml(app.category)} • <span class="font-mono">${escapeHtml(app.fileName)}</span></p>
+                  </div>
+                </div>
+              </div>
+
+              <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">${escapeHtml(app.description)}</p>
+
+              <div class="flex flex-wrap gap-1.5">
+                ${tagsHtml}
+              </div>
+            </div>
+
+            <div class="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-slate-800/80">
+              <button type="button" onclick="openLaunchModal('${app.id}')"
+                class="rounded-xl ${launchBtnClasses} px-4 py-2 text-xs font-bold transition">
+                Launch ${escapeHtml(app.name)}
+              </button>
+              <div class="flex flex-wrap items-center gap-2">
+                <button type="button" onclick="triggerDirectAppDownload('${app.id}')"
+                  class="rounded-xl border border-emerald-500/40 bg-emerald-600/15 hover:bg-emerald-600/25 px-3 py-2 text-xs font-semibold text-emerald-200 transition">
+                  Download .html
+                </button>
+                <a href="${escapeAttr(downloadUrl)}" target="_blank" rel="noopener noreferrer"
+                  class="rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 px-3.5 py-2 text-xs font-semibold text-slate-200 transition">
+                  GitHub Link
+                </a>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    function openLaunchModal(appId) {
+      const app = DEFAULT_APPS.find(item => item.id === appId);
+      if (!app) return;
+      modalAppId = app.id;
+
+      document.getElementById('modal-app-badge').textContent = app.shortCode;
+      document.getElementById('modal-app-title').textContent = app.name;
+      document.getElementById('modal-app-meta').textContent = `${app.category} • ${app.fileName}`;
+      document.getElementById('modal-app-desc').textContent = app.description;
+      document.getElementById('modal-github-link').href = getAppDownloadUrl(app.id);
+
+      const user = getActiveUser() || { orgTier: 'Personal', ageTier: 'Adult' };
+      const tierBanner = document.getElementById('modal-tier-banner');
+      if (user.ageTier === 'Child') {
+        tierBanner.textContent = `Child Mode Active (${user.orgTier}): Guided, age-appropriate sessions and clear step prompts are enabled for ${app.name}.`;
+      } else {
+        tierBanner.textContent = `${user.orgTier} • ${user.ageTier} Mode Active: Full toolset and direct TinyTactix GitHub downloads enabled for ${app.name}.`;
+      }
+
+      const modal = document.getElementById('launch-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeLaunchModal() {
+      const modal = document.getElementById('launch-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      modalAppId = null;
+    }
+
+    function recordQuickProjectFromModal() {
+      const app = DEFAULT_APPS.find(item => item.id === modalAppId);
+      if (!app) return;
+      const user = getActiveUser();
+      state.projects.unshift({
+        id: `p-${Date.now()}`,
+        appName: app.name,
+        title: `${app.name} Quick Session (${user ? user.ageTier : 'Adult'})`,
+        updatedAt: 'Just now'
+      });
+      saveState();
+      renderProjectsList();
+      closeLaunchModal();
+      showToast(`Added quick project for ${app.name}.`);
+    }
+
+    /* ===================================================================== */
+    /* PROJECT & GITHUB DOWNLOAD LINK MANAGER                                */
+    /* ===================================================================== */
+    function handleAddProject(event) {
+      event.preventDefault();
+      const appName = document.getElementById('proj-app-select').value;
+      const title = document.getElementById('proj-name-input').value.trim();
+      if (!title) return;
+
+      state.projects.unshift({
+        id: `p-${Date.now()}`,
+        appName,
+        title,
+        updatedAt: 'Just now'
+      });
+      saveState();
+      document.getElementById('proj-name-input').value = '';
+      renderProjectsList();
+      showToast(`Saved "${title}" under ${appName}.`);
+    }
+
+    function deleteProjectEntry(projectId) {
+      state.projects = state.projects.filter(p => p.id !== projectId);
+      saveState();
+      renderProjectsList();
+      showToast('Project removed.');
+    }
+
+    function renderProjectsList() {
+      const container = document.getElementById('projects-list');
+      if (!container) return;
+
+      if (state.projects.length === 0) {
+        container.innerHTML = '<p class="text-xs text-slate-500">No projects saved yet.</p>';
         return;
       }
 
-      const matchedApp = APPS.find(a => a.key === e.key);
-      if (matchedApp) {
-        openApp(matchedApp.id);
+      container.innerHTML = state.projects.map(p => `
+        <div class="flex items-center justify-between gap-2 rounded-lg border border-slate-800 bg-slate-900 px-3 py-2 text-xs">
+          <div class="min-w-0">
+            <p class="font-semibold text-white truncate">${escapeHtml(p.title)}</p>
+            <p class="text-[11px] text-blue-300">${escapeHtml(p.appName)} • ${escapeHtml(p.updatedAt)}</p>
+          </div>
+          <button type="button" onclick="deleteProjectEntry('${p.id}')"
+            class="shrink-0 rounded-md border border-slate-700 bg-slate-800 hover:border-rose-500/50 hover:text-rose-300 px-2 py-1 text-[11px] text-slate-300 transition">
+            Remove
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function renderGitHubLinksForm() {
+      const container = document.getElementById('github-links-form');
+      if (!container) return;
+
+      container.innerHTML = DEFAULT_APPS.map(app => `
+        <div class="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-2.5">
+          <label for="gh-input-${app.id}" class="sm:w-28 shrink-0 text-xs font-semibold text-slate-300">${escapeHtml(app.name)}</label>
+          <input id="gh-input-${app.id}" type="url" value="${escapeAttr(getAppDownloadUrl(app.id))}"
+            placeholder="https://github.com/TinyTactix/TinyMinyCreative/..."
+            class="flex-1 rounded-lg border border-slate-800 bg-slate-900 px-3 py-1.5 text-xs font-mono text-slate-200 focus:border-indigo-500 focus:outline-none" />
+        </div>
+      `).join('');
+    }
+
+    function saveGitHubLinks() {
+      DEFAULT_APPS.forEach(app => {
+        const input = document.getElementById(`gh-input-${app.id}`);
+        if (!input) return;
+        const val = input.value.trim();
+        if (val && /^https?:\/\//i.test(val)) {
+          state.githubLinks[app.id] = val;
+        }
+      });
+      saveState();
+      renderAppsGrid();
+      showToast('GitHub download links updated.');
+    }
+
+    function resetOfficialGitHubLinks() {
+      DEFAULT_APPS.forEach(app => {
+        state.githubLinks[app.id] = app.githubUrl;
+      });
+      saveState();
+      renderGitHubLinksForm();
+      renderAppsGrid();
+      showToast('Restored all four official TinyTactix GitHub download links.');
+    }
+
+    function exportHubManifest() {
+      const payload = {
+        hub: 'TinyMinyCreative Studio & App Hub',
+        activeUser: getActiveUser(),
+        easyLearnPalette: state.easyLearnPalette,
+        githubLinks: state.githubLinks,
+        projects: state.projects
+      };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'tinyminycreative-hub-manifest.json';
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('Exported hub manifest JSON.');
+    }
+
+    /* ===================================================================== */
+    /* ACCOUNT TIER UPDATES & 2-STEP OTP SELF-SERVICE DELETION               */
+    /* ===================================================================== */
+    function handleUpdateTierPreferences(event) {
+      event.preventDefault();
+      const user = getActiveUser();
+      if (!user) return;
+      user.orgTier = document.getElementById('edit-org-tier').value;
+      user.ageTier = document.getElementById('edit-age-tier').value;
+      saveState();
+      enterWorkspace();
+      showToast('Account tier preferences updated.');
+    }
+
+    function dispatchDeletionOtp() {
+      pendingDeletionOtp = String(Math.floor(100000 + Math.random() * 900000));
+      const badge = document.getElementById('deletion-otp-preview');
+      badge.textContent = `Deletion OTP: ${pendingDeletionOtp}`;
+      badge.classList.remove('hidden');
+      showToast(`Deletion OTP generated: ${pendingDeletionOtp}`);
+    }
+
+    function handleSelfDeleteAccount() {
+      const confirmInput = document.getElementById('delete-confirm-input');
+      const otpInput = document.getElementById('delete-otp-input');
+
+      if (confirmInput.value.trim() !== 'DELETE') {
+        showToast('Type DELETE in the confirmation box first.');
+        return;
+      }
+      if (!pendingDeletionOtp || otpInput.value.trim() !== pendingDeletionOtp) {
+        showToast('Generate and enter the valid 6-digit Deletion OTP.');
+        return;
+      }
+
+      const activeEmail = (state.activeEmail || '').toLowerCase();
+      state.accounts = state.accounts.filter(acc => acc.email.toLowerCase() !== activeEmail);
+      state.activeEmail = null;
+      state.sessionUnlocked = false;
+      pendingDeletionOtp = null;
+      saveState();
+
+      confirmInput.value = '';
+      otpInput.value = '';
+      document.getElementById('deletion-otp-preview').classList.add('hidden');
+      switchWorkspaceSection('launcher');
+      syncGateVisibility();
+      switchAuthMode('register');
+      showToast('Account permanently deleted.');
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function escapeAttr(str) {
+      return escapeHtml(str).replace(/'/g, '&#39;');
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      setupOtpInputs();
+      syncGateVisibility();
+      if (getActiveUser() && state.sessionUnlocked) {
+        enterWorkspace();
+      } else {
+        switchAuthMode(state.accounts.length > 0 ? 'signin' : 'register');
       }
     });
-
-    // Boot
-    (function init() {
-      renderCards();
-      applyScreenState();
-
-      const user = getCurrentUser();
-      if (user && user.otpVerified) {
-        const hash = window.location.hash.replace(/^#/, "");
-        if (hash && appMap[hash]) {
-          openApp(hash);
-        } else {
-          showHome();
-        }
-      }
-    })();
   </script>
 </body>
 </html>
